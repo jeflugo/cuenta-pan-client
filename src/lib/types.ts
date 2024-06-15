@@ -8,6 +8,12 @@ export type TBread = {
 	make: string
 }
 
+export type TPrep = {
+	mass: number
+	water: number
+	flour: number
+}
+
 export type StateContextProviderProps = {
 	children: React.ReactNode
 }
