@@ -18,6 +18,13 @@ export type StateContextProviderProps = {
 }
 
 export type StateContextType = {
-	breads: TBread[]
-	setBreads: React.Dispatch<React.SetStateAction<TBread[]>>
+	saltyBreads: TBread[] | null
+	setSaltyBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
+	saltyBreadPrep: TPrep | null
+
+	sweetBreads: TBread[] | null
+	setSweetBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
+	sweetBreadPrep: TPrep | null
+
+	calculateMass: (tag: string) => void
 }
