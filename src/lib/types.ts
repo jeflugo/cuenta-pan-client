@@ -2,7 +2,6 @@ export type TBread = {
 	id: string
 	name: string
 	title: string
-	tag: string
 	weightInGr: number
 	left: string
 	make: string
