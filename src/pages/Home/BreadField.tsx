@@ -1,39 +1,37 @@
 import { useState } from 'react'
-import { StateContextType, TBread } from '../../lib/types'
+import { TBread } from '../../lib/types'
 import { BiPencil, BiTrash } from 'react-icons/bi'
-import { useStateContext } from '../../context/state-context'
 
 type BreadFieldProps = {
 	bread: TBread
+	breads: TBread[]
+	setBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
 }
 
-export default function BreadField({ bread }: BreadFieldProps) {
+export default function BreadField({
+	bread,
+	breads,
+	setBreads,
+}: BreadFieldProps) {
 	const { title, weightInGr } = bread
 	const [inputData, setInputData] = useState({
-		left: '',
-		make: '',
+		left: 0,
+		make: 0,
 	})
-	const { left, make } = inputData
-	const { breads, setBreads } = useStateContext() as StateContextType
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const updatedBread = breads.find(({ id }) => bread.id === id) as TBread
-
+		// Find index
 		const modifyBreadIndex = breads.findIndex(({ id }) => bread.id === id)
-		const modifiedBreads = breads
+		// Make copy
+		const modifiedBreads = breads.map(a => a)
 
-		const value = e.target.value
+		const value = parseInt(e.target.value)
 
 		if (e.target.name === 'left') {
-			updatedBread.left = value
+			modifiedBreads[modifyBreadIndex].left = value
 		} else {
-			updatedBread.make = value
+			modifiedBreads[modifyBreadIndex].make = value
 		}
-
-		modifiedBreads[modifyBreadIndex] = updatedBread
-
-		//! ISNAN
-		if (isNaN(Math.floor(+value))) return
 
 		setBreads(modifiedBreads)
 		setInputData({ ...inputData, [e.target.name]: value })
@@ -57,16 +55,16 @@ export default function BreadField({ bread }: BreadFieldProps) {
 			/>
 			<input
 				className='border-2 border-black px-2 rounded outline-none py-[2px] w-12'
-				type='text'
+				type='number'
 				name='left'
-				value={left}
+				value={inputData.left}
 				onChange={handleChange}
 			/>
 			<input
 				className='border-2 border-black px-2 rounded outline-none py-[2px] w-12'
-				type='text'
+				type='number'
 				name='make'
-				value={make}
+				value={inputData.make}
 				onChange={handleChange}
 			/>
 
