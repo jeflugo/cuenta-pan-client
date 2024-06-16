@@ -3,14 +3,51 @@ export type TBread = {
 	name: string
 	title: string
 	weightInGr: number
-	left: string
-	make: string
+	left: number
+	make: number
 }
 
 export type TPrep = {
-	mass: number
-	water: number
-	flour: number
+	mass: {
+		unit: 'g'
+		amount: number
+	}
+	flour: {
+		unit: 'g'
+		amount: number
+	}
+	water: {
+		unit: 'g'
+		amount: number
+	}
+	sugar: {
+		unit: 'g'
+		amount: number
+	}
+	salt: {
+		unit: 'g'
+		amount: number
+	}
+	butter: {
+		unit: 'g'
+		amount: number
+	}
+	vanilla: {
+		unit: 'tapa'
+		amount: number
+	}
+	butterEssence?: {
+		unit: 'tapa'
+		amount: number
+	}
+	margarineEssence?: {
+		unit: 'tapa'
+		amount: number
+	}
+	pineappleEssence?: {
+		unit: 'tapa'
+		amount: number
+	}
 }
 
 export type StateContextProviderProps = {
