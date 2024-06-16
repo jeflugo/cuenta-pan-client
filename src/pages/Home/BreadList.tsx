@@ -1,6 +1,6 @@
 import { Button } from '@material-tailwind/react'
 import { useStateContext } from '../../context/state-context'
-import { StateContextType } from '../../lib/types'
+import { StateContextType, TBread, TPrep } from '../../lib/types'
 import BreadField from './BreadField'
 
 type BreadListProps = {
@@ -10,19 +10,27 @@ type BreadListProps = {
 export default function BreadList({ tag }: BreadListProps) {
 	const {
 		saltyBreads,
+		setSaltyBreads,
 		sweetBreads,
+		setSweetBreads,
 		calculateMass,
 		saltyBreadPrep,
 		sweetBreadPrep,
 	} = useStateContext() as StateContextType
 
-	let breads, prep, name
+	let breads: TBread[] | null
+	let setBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
+	let prep: TPrep | null
+	let name: string
+
 	if (tag === 'sweet') {
 		breads = sweetBreads
+		setBreads = setSweetBreads
 		prep = sweetBreadPrep
 		name = 'Dulce'
 	} else {
 		breads = saltyBreads
+		setBreads = setSaltyBreads
 		prep = saltyBreadPrep
 		name = 'Salado'
 	}
@@ -34,7 +42,14 @@ export default function BreadList({ tag }: BreadListProps) {
 			<div className='mb-4'>
 				{breads ? (
 					breads.map(bread => {
-						return <BreadField key={bread.id} bread={bread} />
+						return (
+							<BreadField
+								key={bread.id}
+								bread={bread}
+								breads={breads}
+								setBreads={setBreads}
+							/>
+						)
 					})
 				) : (
 					<h2>No hay panes en la lista</h2>
@@ -54,7 +69,11 @@ export default function BreadList({ tag }: BreadListProps) {
 			>
 				Calcular Masa
 			</Button>
-			{prep && <div>Masa total: {prep.mass} gramos</div>}
+			{prep && (
+				<div>
+					<div>Masa total: {prep.mass.amount} gramos</div>
+				</div>
+			)}
 		</div>
 	)
 }
