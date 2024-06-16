@@ -1,4 +1,10 @@
-const SALTY_REC = {
+import { TPrep } from '../lib/types'
+
+const SALTY_REC: TPrep = {
+	mass: {
+		unit: 'g',
+		amount: 46310,
+	},
 	flour: {
 		unit: 'g',
 		amount: 30000,
@@ -17,7 +23,7 @@ const SALTY_REC = {
 	},
 	butter: {
 		unit: 'g',
-		amount: 300,
+		amount: 250,
 	},
 	vanilla: {
 		unit: 'tapa',
@@ -33,7 +39,11 @@ const SALTY_REC = {
 	},
 }
 
-const SWEET_REC = {
+const SWEET_REC: TPrep = {
+	mass: {
+		unit: 'g',
+		amount: 49250,
+	},
 	flour: {
 		unit: 'g',
 		amount: 30000,
@@ -52,9 +62,9 @@ const SWEET_REC = {
 	},
 	butter: {
 		unit: 'g',
-		amount: 300,
+		amount: 250,
 	},
-	vanillaEssence: {
+	vanilla: {
 		unit: 'tapa',
 		amount: 4,
 	},
