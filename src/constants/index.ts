@@ -74,4 +74,7 @@ const SWEET_REC: TPrep = {
 	},
 }
 
-export { SALTY_REC, SWEET_REC }
+const MASS_FLOUR_SWEET = SWEET_REC.mass.amount / SWEET_REC.flour.amount
+const MASS_FLOUR_SALTY = SALTY_REC.mass.amount / SALTY_REC.flour.amount
+
+export { SALTY_REC, SWEET_REC, MASS_FLOUR_SWEET, MASS_FLOUR_SALTY }
