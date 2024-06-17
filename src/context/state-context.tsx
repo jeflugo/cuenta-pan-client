@@ -81,7 +81,7 @@ export default function StateContextProvider({
 
 	useEffect(() => {
 		setSaltyBreads(initialSaltyBreads)
-		// setSweetBreads(initialSweetBreads)
+		setSweetBreads(initialSweetBreads)
 	}, [])
 
 	const calculateMass = (tag: string) => {
