@@ -37,37 +37,6 @@ const initialSweetBreads: TBread[] = [
 	},
 ]
 
-const initialPrep: TPrep = {
-	mass: {
-		unit: 'g',
-		amount: 0,
-	},
-	flour: {
-		unit: 'g',
-		amount: 0,
-	},
-	water: {
-		unit: 'g',
-		amount: 0,
-	},
-	sugar: {
-		unit: 'g',
-		amount: 0,
-	},
-	salt: {
-		unit: 'g',
-		amount: 0,
-	},
-	butter: {
-		unit: 'g',
-		amount: 0,
-	},
-	vanilla: {
-		unit: 'tapa',
-		amount: 0,
-	},
-}
-
 const StateContext = createContext<StateContextType | null>(null)
 
 export default function StateContextProvider({
@@ -85,26 +54,55 @@ export default function StateContextProvider({
 	}, [])
 
 	const calculateMass = (tag: string) => {
-		let setBreadPrep: React.Dispatch<React.SetStateAction<TPrep | null>>
 		let breads: TBread[] | null
+		let setBreadPrep: React.Dispatch<React.SetStateAction<TPrep | null>>
 		let BREAD_REC: TPrep
 		let MASS_FLOUR: number
 
 		if (tag === 'sweet') {
-			setBreadPrep = setSweetBreadPrep
 			breads = sweetBreads
+			setBreadPrep = setSweetBreadPrep
 			BREAD_REC = SWEET_REC
 			MASS_FLOUR = MASS_FLOUR_SWEET
 		} else {
-			setBreadPrep = setSaltyBreadPrep
 			breads = saltyBreads
+			setBreadPrep = setSaltyBreadPrep
 			BREAD_REC = SALTY_REC
 			MASS_FLOUR = MASS_FLOUR_SALTY
 		}
 
 		setBreadPrep(null)
 
-		const prep = initialPrep
+		const prep: TPrep = {
+			mass: {
+				unit: 'g',
+				amount: 0,
+			},
+			flour: {
+				unit: 'g',
+				amount: 0,
+			},
+			water: {
+				unit: 'g',
+				amount: 0,
+			},
+			sugar: {
+				unit: 'g',
+				amount: 0,
+			},
+			salt: {
+				unit: 'g',
+				amount: 0,
+			},
+			butter: {
+				unit: 'g',
+				amount: 0,
+			},
+			vanilla: {
+				unit: 'tapa',
+				amount: 0,
+			},
+		}
 
 		let mass = 0
 		breads?.forEach(({ make, weightInGr }) => {
@@ -114,7 +112,6 @@ export default function StateContextProvider({
 		// Calculate prep
 		prep.mass.amount = mass
 		prep.flour.amount = Math.floor(prep.mass.amount / MASS_FLOUR)
-		console.log(prep.flour.amount)
 		prep.water.amount = Math.floor(
 			(BREAD_REC.water.amount / BREAD_REC.flour.amount) * prep.flour.amount
 		)
@@ -156,6 +153,7 @@ export default function StateContextProvider({
 			toast.error('Lista vacia')
 			return
 		}
+
 		setBreadPrep(prep)
 	}
 	return (
