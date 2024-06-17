@@ -113,7 +113,7 @@ export default function StateContextProvider({
 
 		// Calculate prep
 		prep.mass.amount = mass
-		prep.flour.amount = prep.mass.amount / MASS_FLOUR
+		prep.flour.amount = Math.floor(prep.mass.amount / MASS_FLOUR)
 		console.log(prep.flour.amount)
 		prep.water.amount = Math.floor(
 			(BREAD_REC.water.amount / BREAD_REC.flour.amount) * prep.flour.amount
@@ -127,32 +127,28 @@ export default function StateContextProvider({
 		prep.butter.amount = Math.floor(
 			(BREAD_REC.butter.amount / BREAD_REC.flour.amount) * prep.flour.amount
 		)
-		prep.vanilla.amount = Math.floor(
+		prep.vanilla.amount =
 			(BREAD_REC.vanilla.amount / BREAD_REC.flour.amount) * prep.flour.amount
-		)
 
 		if (tag === 'sweet') {
 			prep.pineappleEssence = {
 				unit: 'tapa',
-				amount: Math.floor(
+				amount:
 					(BREAD_REC.pineappleEssence!.amount / BREAD_REC.flour.amount) *
-						prep.flour.amount
-				),
+					prep.flour.amount,
 			}
 		} else {
 			prep.butterEssence = {
 				unit: 'tapa',
-				amount: Math.floor(
+				amount:
 					(BREAD_REC.margarineEssence!.amount / BREAD_REC.flour.amount) *
-						prep.flour.amount
-				),
+					prep.flour.amount,
 			}
 			prep.margarineEssence = {
 				unit: 'tapa',
-				amount: Math.floor(
+				amount:
 					(BREAD_REC.margarineEssence!.amount / BREAD_REC.flour.amount) *
-						prep.flour.amount
-				),
+					prep.flour.amount,
 			}
 		}
 
