@@ -73,19 +73,42 @@ export default function BreadList({ tag }: BreadListProps) {
 			)}
 			{prep && (
 				<div>
-					<div>Masa total: {prep.mass.amount} gramos</div>
-					<div>Harina: {prep.flour.amount} gramos</div>
-					<div>Agua: {prep.water.amount} gramos</div>
-					<div>Azucar: {prep.sugar.amount} gramos</div>
-					<div>Sal: {prep.salt.amount} gramos</div>
-					<div>Manteca: {prep.butter.amount} gramos</div>
-					<div>Vainilla: {prep.vanilla.amount} gramos</div>
+					<div>
+						Masa total: {prep.mass.amount} {prep.mass.unit}
+					</div>
+					<div>
+						Harina: {prep.flour.amount} {prep.flour.unit}
+					</div>
+					<div>
+						Agua: {prep.water.amount} {prep.water.unit}
+					</div>
+					<div>
+						Azucar: {prep.sugar.amount} {prep.sugar.unit}
+					</div>
+					<div>
+						Sal: {prep.salt.amount} {prep.salt.unit}
+					</div>
+					<div>
+						Manteca: {prep.butter.amount} {prep.butter.unit}
+					</div>
+					<div>
+						Vainilla: {prep.vanilla.amount} {prep.vanilla.unit}
+					</div>
 					{tag === 'sweet' ? (
-						<div>E. piña: {prep.pineappleEssence!.amount} gramos</div>
+						<div>
+							E. piña: {prep.pineappleEssence!.amount}{' '}
+							{prep.pineappleEssence!.unit}
+						</div>
 					) : (
 						<>
-							<div>E. mantecado: {prep.butterEssence!.amount} gramos</div>
-							<div>E. mantequilla: {prep.margarineEssence!.amount} gramos</div>
+							<div>
+								E. mantecado: {prep.butterEssence!.amount}{' '}
+								{prep.butterEssence!.unit}
+							</div>
+							<div>
+								E. mantequilla: {prep.margarineEssence!.amount}{' '}
+								{prep.margarineEssence!.unit}
+							</div>
 						</>
 					)}
 				</div>
