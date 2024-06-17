@@ -39,9 +39,9 @@ export default function BreadList({ tag }: BreadListProps) {
 		<div className='mb-6'>
 			<h2 className='text-xl font-medium mb-1'>Pan {name}</h2>
 
-			<div className='mb-4'>
-				{breads ? (
-					breads.map(bread => {
+			{breads && (
+				<div className='mb-4'>
+					{breads.map(bread => {
 						return (
 							<BreadField
 								key={bread.id}
@@ -50,28 +50,44 @@ export default function BreadList({ tag }: BreadListProps) {
 								setBreads={setBreads}
 							/>
 						)
-					})
-				) : (
-					<h2>No hay panes en la lista</h2>
-				)}
-			</div>
+					})}
+				</div>
+			)}
 
-			<div className='w-full flex justify-end mb-1'>
+			<div
+				className={`w-full flex ${breads ? 'justify-end' : 'justify-center'} mb-1`}
+			>
 				<Button size='sm' variant='outlined'>
 					Añadir nuevo pan
 				</Button>
 			</div>
-			<Button
-				size='sm'
-				onClick={() => {
-					calculateMass(tag)
-				}}
-			>
-				Calcular Masa
-			</Button>
+			{breads && (
+				<Button
+					size='sm'
+					onClick={() => {
+						calculateMass(tag)
+					}}
+				>
+					Calcular Masa
+				</Button>
+			)}
 			{prep && (
 				<div>
 					<div>Masa total: {prep.mass.amount} gramos</div>
+					<div>Harina: {prep.flour.amount} gramos</div>
+					<div>Agua: {prep.water.amount} gramos</div>
+					<div>Azucar: {prep.sugar.amount} gramos</div>
+					<div>Sal: {prep.salt.amount} gramos</div>
+					<div>Manteca: {prep.butter.amount} gramos</div>
+					<div>Vainilla: {prep.vanilla.amount} gramos</div>
+					{tag === 'sweet' ? (
+						<div>E. piña: {prep.pineappleEssence!.amount} gramos</div>
+					) : (
+						<>
+							<div>E. mantecado: {prep.butterEssence!.amount} gramos</div>
+							<div>E. mantequilla: {prep.margarineEssence!.amount} gramos</div>
+						</>
+					)}
 				</div>
 			)}
 		</div>
