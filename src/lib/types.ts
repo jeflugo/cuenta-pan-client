@@ -1,3 +1,24 @@
+export type StateContextProviderProps = {
+	children: React.ReactNode
+}
+
+export type StateContextType = {
+	saltyBreads: TBread[] | null
+	setSaltyBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
+	saltyBreadPrep: TPrep | null
+
+	sweetBreads: TBread[] | null
+	setSweetBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
+	sweetBreadPrep: TPrep | null
+
+	calculateMass: (tag: string) => void
+	addBread: (
+		e: React.FormEvent<HTMLFormElement>,
+		addBreadData: TAddBreadData,
+		tag: string
+	) => void
+}
+
 export type TBread = {
 	id: string
 	name: string
@@ -50,18 +71,7 @@ export type TPrep = {
 	}
 }
 
-export type StateContextProviderProps = {
-	children: React.ReactNode
-}
-
-export type StateContextType = {
-	saltyBreads: TBread[] | null
-	setSaltyBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
-	saltyBreadPrep: TPrep | null
-
-	sweetBreads: TBread[] | null
-	setSweetBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
-	sweetBreadPrep: TPrep | null
-
-	calculateMass: (tag: string) => void
+export type TAddBreadData = {
+	name: string
+	weight: number
 }
