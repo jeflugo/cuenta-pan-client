@@ -7,11 +7,13 @@ export default function Layout() {
 	return (
 		<>
 			<Toaster />
-			<Header />
-			<main>
-				<Outlet />
-			</main>
-			<Footer />
+			<div className='flex flex-col min-h-screen'>
+				<Header />
+				<main className='flex-1'>
+					<Outlet />
+				</main>
+				<Footer />
+			</div>
 		</>
 	)
 }
