@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import {
 	StateContextProviderProps,
 	StateContextType,
+	TAddBreadData,
 	TBread,
 	TPrep,
 } from '../lib/types'
@@ -124,28 +125,41 @@ export default function StateContextProvider({
 		prep.butter.amount = Math.floor(
 			(BREAD_REC.butter.amount / BREAD_REC.flour.amount) * prep.flour.amount
 		)
-		prep.vanilla.amount =
-			(BREAD_REC.vanilla.amount / BREAD_REC.flour.amount) * prep.flour.amount
+		prep.vanilla.amount = parseFloat(
+			(
+				(BREAD_REC.vanilla.amount / BREAD_REC.flour.amount) *
+				prep.flour.amount
+			).toFixed(3)
+		)
 
 		if (tag === 'sweet') {
 			prep.pineappleEssence = {
 				unit: 'tapa',
-				amount:
-					(BREAD_REC.pineappleEssence!.amount / BREAD_REC.flour.amount) *
-					prep.flour.amount,
+				amount: parseFloat(
+					(
+						(BREAD_REC.pineappleEssence!.amount / BREAD_REC.flour.amount) *
+						prep.flour.amount
+					).toFixed(3)
+				),
 			}
 		} else {
 			prep.butterEssence = {
 				unit: 'tapa',
-				amount:
-					(BREAD_REC.margarineEssence!.amount / BREAD_REC.flour.amount) *
-					prep.flour.amount,
+				amount: parseFloat(
+					(
+						(BREAD_REC.butterEssence!.amount / BREAD_REC.flour.amount) *
+						prep.flour.amount
+					).toFixed(3)
+				),
 			}
 			prep.margarineEssence = {
 				unit: 'tapa',
-				amount:
-					(BREAD_REC.margarineEssence!.amount / BREAD_REC.flour.amount) *
-					prep.flour.amount,
+				amount: parseFloat(
+					(
+						(BREAD_REC.margarineEssence!.amount / BREAD_REC.flour.amount) *
+						prep.flour.amount
+					).toFixed(3)
+				),
 			}
 		}
 
@@ -156,6 +170,15 @@ export default function StateContextProvider({
 
 		setBreadPrep(prep)
 	}
+
+	const addBread = (
+		e: React.FormEvent<HTMLFormElement>,
+		addBreadData: TAddBreadData,
+		tag: string
+	) => {
+		e.preventDefault()
+	}
+
 	return (
 		<StateContext.Provider
 			value={{
@@ -168,6 +191,7 @@ export default function StateContextProvider({
 				sweetBreadPrep,
 
 				calculateMass,
+				addBread,
 			}}
 		>
 			{children}
