@@ -1,30 +1,28 @@
 import { useState } from 'react'
 import Container from '../../components/Container'
 import { Button } from '@material-tailwind/react'
-import { StateContextType, TBreadData, TBread } from '../../lib/types'
-import { useStateContext } from '../../context/state-context'
+import { TBreadData, TBread } from '../../lib/types'
 import { v4 } from 'uuid'
 import toast from 'react-hot-toast'
 
 type UpdateBreadProps = {
-	name: string
-	weight: number
-	tag: string
+	bread: TBread
+	breads: TBread[] | null
+	setBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
+	toggleUpdate: () => void
 }
 
-export default function UpdateBread({ name, weight, tag }: UpdateBreadProps) {
-	const {
-		sweetBreads,
-		saltyBreads,
-		setSweetBreads,
-		setSaltyBreads,
-		toggleUpdate,
-	} = useStateContext() as StateContextType
-
+export default function UpdateBread({
+	bread,
+	breads,
+	setBreads,
+	toggleUpdate,
+}: UpdateBreadProps) {
 	const [updateBreadData, setUpdateBreadData] = useState<TBreadData>({
-		name,
-		weight,
+		name: bread.name,
+		weight: bread.weight,
 	})
+	const { id } = bread
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value
@@ -37,27 +35,15 @@ export default function UpdateBread({ name, weight, tag }: UpdateBreadProps) {
 
 	const updateBread = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
-		const newBread: TBread = {
-			id: v4(),
-			name: updateBreadData.name,
-			weight: updateBreadData.weight,
-			left: 0,
-			make: 0,
-		}
-		if (tag === 'sweet') {
-			if (!sweetBreads) {
-				setSweetBreads([newBread])
-			} else {
-				setSweetBreads([...sweetBreads, newBread])
-			}
-		} else {
-			if (!saltyBreads) {
-				setSaltyBreads([newBread])
-			} else {
-				setSaltyBreads([...saltyBreads, newBread])
-			}
-		}
+
+		const newBreads = breads!.map(bread => bread)
+		const index = breads!.findIndex(bread => bread.id === id)
+		newBreads[index].name = updateBreadData.name
+		newBreads[index].weight = updateBreadData.weight
+		setBreads(newBreads)
+
 		toast.success(`Pan "${updateBreadData.name}" actualizado.`)
+		toggleUpdate()
 	}
 
 	return (
@@ -73,6 +59,7 @@ export default function UpdateBread({ name, weight, tag }: UpdateBreadProps) {
 								name='name'
 								value={updateBreadData.name}
 								onChange={handleChange}
+								onFocus={e => e.target.select()}
 								className='border-2 border-black px-2 rounded outline-none py-[2px] w-full'
 							/>
 						</label>
@@ -84,6 +71,7 @@ export default function UpdateBread({ name, weight, tag }: UpdateBreadProps) {
 								name='weight'
 								value={updateBreadData.weight}
 								onChange={handleChange}
+								onFocus={e => e.target.select()}
 								className='border-2 border-black px-2 rounded outline-none py-[2px] w-full'
 							/>
 						</label>
