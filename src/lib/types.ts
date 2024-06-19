@@ -12,18 +12,23 @@ export type StateContextType = {
 	sweetBreadPrep: TPrep | null
 
 	calculateMass: (tag: string) => void
+
 	addBread: (
 		e: React.FormEvent<HTMLFormElement>,
-		addBreadData: TAddBreadData,
+		addBreadData: TBreadData,
 		tag: string
 	) => void
+
+	openAdd: boolean
+	toggleAdd: () => void
+	openUpdate: boolean
+	toggleUpdate: () => void
 }
 
 export type TBread = {
 	id: string
 	name: string
-	title: string
-	weightInGr: number
+	weight: number
 	left: number
 	make: number
 }
@@ -71,7 +76,7 @@ export type TPrep = {
 	}
 }
 
-export type TAddBreadData = {
+export type TBreadData = {
 	name: string
 	weight: number
 }
