@@ -1,16 +1,14 @@
 import { Button } from '@material-tailwind/react'
 import { useStateContext } from '../../context/state-context'
-import { StateContextType, TBread, TPrep } from '../../lib/types'
-import BreadField from './BreadField'
+import { StateContextType } from '../../lib/types'
+import Bread from './Bread'
 import AddBread from './AddBread'
-import { useState } from 'react'
 
 type BreadListProps = {
 	tag: string
 }
 
 export default function BreadList({ tag }: BreadListProps) {
-	const [addOpen, setAddOpen] = useState(false)
 	const {
 		saltyBreads,
 		setSaltyBreads,
@@ -19,26 +17,15 @@ export default function BreadList({ tag }: BreadListProps) {
 		calculateMass,
 		saltyBreadPrep,
 		sweetBreadPrep,
+		openAdd,
+		toggleAdd,
 	} = useStateContext() as StateContextType
 
-	let breads: TBread[] | null
-	let setBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
-	let prep: TPrep | null
-	let name: string
-
-	if (tag === 'sweet') {
-		breads = sweetBreads
-		setBreads = setSweetBreads
-		prep = sweetBreadPrep
-		name = 'Dulce'
-	} else {
-		breads = saltyBreads
-		setBreads = setSaltyBreads
-		prep = saltyBreadPrep
-		name = 'Salado'
-	}
-
-	const toggleAdd = () => setAddOpen(!addOpen)
+	const isSweet = tag === 'sweet'
+	const breads = isSweet ? sweetBreads : saltyBreads
+	const setBreads = isSweet ? setSweetBreads : setSaltyBreads
+	const prep = isSweet ? sweetBreadPrep : saltyBreadPrep
+	const name = isSweet ? 'Dulce' : 'Salado'
 
 	return (
 		<div className='mb-6'>
@@ -48,11 +35,12 @@ export default function BreadList({ tag }: BreadListProps) {
 				<div className='mb-4 gap-2 flex flex-col'>
 					{breads.map(bread => {
 						return (
-							<BreadField
+							<Bread
 								key={bread.id}
 								bread={bread}
 								breads={breads}
 								setBreads={setBreads}
+								tag={tag}
 							/>
 						)
 					})}
@@ -76,7 +64,7 @@ export default function BreadList({ tag }: BreadListProps) {
 					Calcular Preparacion
 				</Button>
 			)}
-			{addOpen && <AddBread toggleAdd={toggleAdd} tag={tag} />}
+			{openAdd && <AddBread tag={tag} />}
 			{prep && (
 				<div className='mt-4'>
 					<h3 className='text-lg font-bold underline'>Preparacion</h3>
