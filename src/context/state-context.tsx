@@ -49,6 +49,9 @@ export default function StateContextProvider({
 	const [sweetBreads, setSweetBreads] = useState<TBread[] | null>(null)
 	const [sweetBreadPrep, setSweetBreadPrep] = useState<TPrep | null>(null)
 
+	const [openAdd, setOpenAdd] = useState(false)
+	const [openUpdate, setOpenUpdate] = useState(false)
+
 	useEffect(() => {
 		setSaltyBreads(initialSaltyBreads)
 		setSweetBreads(initialSweetBreads)
