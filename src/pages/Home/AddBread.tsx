@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import Container from '../../components/Container'
 import { Button } from '@material-tailwind/react'
-import { StateContextType, TBreadData } from '../../lib/types'
-import { useStateContext } from '../../context/state-context'
+import { TBread, TBreadData } from '../../lib/types'
+import { v4 } from 'uuid'
+import toast from 'react-hot-toast'
 
 const initialAddBreadData = {
 	name: '',
@@ -10,12 +11,16 @@ const initialAddBreadData = {
 }
 
 type AddBreadProps = {
-	tag: string
+	breads: TBread[] | null
+	setBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
+	toggleAdd: () => void
 }
 
-export default function AddBread({ tag }: AddBreadProps) {
-	const { toggleAdd, addBread } = useStateContext() as StateContextType
-
+export default function AddBread({
+	breads,
+	setBreads,
+	toggleAdd,
+}: AddBreadProps) {
 	const [addBreadData, setAddBreadData] =
 		useState<TBreadData>(initialAddBreadData)
 	const { name, weight } = addBreadData
@@ -29,15 +34,31 @@ export default function AddBread({ tag }: AddBreadProps) {
 		}))
 	}
 
+	const addBread = (e: React.FormEvent<HTMLFormElement>) => {
+		e.preventDefault()
+
+		const newBread: TBread = {
+			id: v4(),
+			name,
+			weight,
+			left: 0,
+			make: 0,
+		}
+
+		if (!breads) {
+			setBreads([newBread])
+		} else {
+			setBreads([...breads, newBread])
+		}
+
+		toast.success(`Pan "${name}" agregado.`)
+		toggleAdd()
+	}
+
 	return (
 		<div className='fixed z-10 top-0 left-0 right-0 bottom-0 bg-black/50 flex justify-center items-center'>
 			<Container>
-				<form
-					onSubmit={e => {
-						addBread(e, addBreadData, tag)
-					}}
-					className='py-4 px-6 bg-white rounded'
-				>
+				<form onSubmit={addBread} className='py-4 px-6 bg-white rounded'>
 					<div className='flex gap-2 mb-4'>
 						<label className='w-1/2'>
 							<h3 className='font-medium'>Nombre</h3>
