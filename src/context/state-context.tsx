@@ -58,22 +58,11 @@ export default function StateContextProvider({
 	}, [])
 
 	const calculateMass = (tag: string) => {
-		let breads: TBread[] | null
-		let setBreadPrep: React.Dispatch<React.SetStateAction<TPrep | null>>
-		let BREAD_REC: TPrep
-		let MASS_FLOUR: number
-
-		if (tag === 'sweet') {
-			breads = sweetBreads
-			setBreadPrep = setSweetBreadPrep
-			BREAD_REC = SWEET_REC
-			MASS_FLOUR = MASS_FLOUR_SWEET
-		} else {
-			breads = saltyBreads
-			setBreadPrep = setSaltyBreadPrep
-			BREAD_REC = SALTY_REC
-			MASS_FLOUR = MASS_FLOUR_SALTY
-		}
+		const isSweet = tag === 'sweet'
+		const breads = isSweet ? sweetBreads : saltyBreads
+		const setBreadPrep = isSweet ? setSweetBreadPrep : setSaltyBreadPrep
+		const BREAD_REC = isSweet ? SWEET_REC : SALTY_REC
+		const MASS_FLOUR = isSweet ? MASS_FLOUR_SWEET : MASS_FLOUR_SALTY
 
 		setBreadPrep(null)
 
