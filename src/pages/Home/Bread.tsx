@@ -1,7 +1,6 @@
 import { useState } from 'react'
-import { StateContextType, TBread } from '../../lib/types'
+import { TBread } from '../../lib/types'
 import { BiPencil, BiTrash } from 'react-icons/bi'
-import { useStateContext } from '../../context/state-context'
 import toast from 'react-hot-toast'
 import UpdateBread from './UpdateBread'
 
@@ -9,29 +8,24 @@ type BreadFieldProps = {
 	bread: TBread
 	breads: TBread[]
 	setBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
-	tag: string
+	LSBreads: string
 }
 
 export default function Bread({
 	bread,
 	breads,
 	setBreads,
-	tag,
+	LSBreads,
 }: BreadFieldProps) {
 	const { id, name, weight } = bread
 	const [inputData, setInputData] = useState({
-		left: 0,
-		make: 0,
+		left: bread.left,
+		make: bread.make,
 	})
 
-	const {
-		sweetBreads,
-		saltyBreads,
-		setSweetBreads,
-		setSaltyBreads,
-		openUpdate,
-		toggleUpdate,
-	} = useStateContext() as StateContextType
+	const [openUpdate, setOpenUpdate] = useState(false)
+
+	const toggleUpdate = () => setOpenUpdate(!openUpdate)
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		// Find index
@@ -48,17 +42,13 @@ export default function Bread({
 		}
 
 		setBreads(modifiedBreads)
+		localStorage.setItem(LSBreads, JSON.stringify(modifiedBreads))
 		setInputData({ ...inputData, [e.target.name]: value })
 	}
 
 	const deleteBread = () => {
-		if (tag === 'sweet') {
-			if (sweetBreads!.length === 1) setSweetBreads(null)
-			else setSweetBreads(sweetBreads!.filter(bread => bread.id !== id))
-		} else {
-			if (saltyBreads!.length === 1) setSaltyBreads(null)
-			else setSaltyBreads(saltyBreads!.filter(bread => bread.id !== id))
-		}
+		if (breads!.length === 1) setBreads(null)
+		else setBreads(breads!.filter(bread => bread.id !== id))
 		toast.success(`Pan "${name}" eliminado.`)
 	}
 
@@ -84,6 +74,7 @@ export default function Bread({
 				name='left'
 				value={inputData.left}
 				onChange={handleChange}
+				onFocus={e => e.target.select()}
 			/>
 			<input
 				className='border-2 border-black px-2 rounded outline-none py-[2px] w-12'
@@ -91,6 +82,7 @@ export default function Bread({
 				name='make'
 				value={inputData.make}
 				onChange={handleChange}
+				onFocus={e => e.target.select()}
 			/>
 
 			<button className='ml-2' onClick={toggleUpdate}>
@@ -99,7 +91,14 @@ export default function Bread({
 			<button onClick={deleteBread}>
 				<BiTrash size={20} />
 			</button>
-			{openUpdate && <UpdateBread name={name} weight={weight} tag={tag} />}
+			{openUpdate && (
+				<UpdateBread
+					bread={bread}
+					toggleUpdate={toggleUpdate}
+					breads={breads}
+					setBreads={setBreads}
+				/>
+			)}
 		</div>
 	)
 }

@@ -6,23 +6,12 @@ export type StateContextType = {
 	saltyBreads: TBread[] | null
 	setSaltyBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
 	saltyBreadPrep: TPrep | null
+	setSaltyBreadPrep: React.Dispatch<React.SetStateAction<TPrep | null>>
 
 	sweetBreads: TBread[] | null
 	setSweetBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
 	sweetBreadPrep: TPrep | null
-
-	calculateMass: (tag: string) => void
-
-	addBread: (
-		e: React.FormEvent<HTMLFormElement>,
-		addBreadData: TBreadData,
-		tag: string
-	) => void
-
-	openAdd: boolean
-	toggleAdd: () => void
-	openUpdate: boolean
-	toggleUpdate: () => void
+	setSweetBreadPrep: React.Dispatch<React.SetStateAction<TPrep | null>>
 }
 
 export type TBread = {
@@ -35,43 +24,53 @@ export type TBread = {
 
 export type TPrep = {
 	mass: {
-		unit: 'g'
+		name: string
+		unit: string
 		amount: number
 	}
 	flour: {
-		unit: 'g'
+		name: string
+		unit: string
 		amount: number
 	}
 	water: {
-		unit: 'g'
+		name: string
+		unit: string
 		amount: number
 	}
 	sugar: {
-		unit: 'g'
+		name: string
+		unit: string
 		amount: number
 	}
 	salt: {
-		unit: 'g'
+		name: string
+		unit: string
 		amount: number
 	}
 	butter: {
-		unit: 'g'
+		name: string
+		unit: string
 		amount: number
 	}
 	vanilla: {
-		unit: 'tapa'
+		name: string
+		unit: string
 		amount: number
 	}
 	butterEssence?: {
-		unit: 'tapa'
+		name: string
+		unit: string
 		amount: number
 	}
 	margarineEssence?: {
-		unit: 'tapa'
+		name: string
+		unit: string
 		amount: number
 	}
 	pineappleEssence?: {
-		unit: 'tapa'
+		name: string
+		unit: string
 		amount: number
 	}
 }

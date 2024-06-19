@@ -14,12 +14,14 @@ type AddBreadProps = {
 	breads: TBread[] | null
 	setBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
 	toggleAdd: () => void
+	LSBreads: string
 }
 
 export default function AddBread({
 	breads,
 	setBreads,
 	toggleAdd,
+	LSBreads,
 }: AddBreadProps) {
 	const [addBreadData, setAddBreadData] =
 		useState<TBreadData>(initialAddBreadData)
@@ -45,12 +47,16 @@ export default function AddBread({
 			make: 0,
 		}
 
+		let newBreads: TBread[]
+
 		if (!breads) {
-			setBreads([newBread])
+			newBreads = [newBread]
 		} else {
-			setBreads([...breads, newBread])
+			newBreads = [...breads, newBread]
 		}
 
+		setBreads(newBreads)
+		localStorage.setItem(LSBreads, JSON.stringify(newBreads))
 		toast.success(`Pan "${name}" agregado.`)
 		toggleAdd()
 	}

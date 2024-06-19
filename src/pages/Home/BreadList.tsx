@@ -1,8 +1,17 @@
 import { Button } from '@material-tailwind/react'
 import { useStateContext } from '../../context/state-context'
-import { StateContextType } from '../../lib/types'
+import { StateContextType, TPrep } from '../../lib/types'
 import Bread from './Bread'
 import AddBread from './AddBread'
+import { useState } from 'react'
+import {
+	MASS_FLOUR_SALTY,
+	MASS_FLOUR_SWEET,
+	SALTY_REC,
+	SWEET_REC,
+} from '../../constants'
+import { BiChevronDown, BiChevronRight } from 'react-icons/bi'
+import { Prep } from '../../clasees'
 
 type BreadListProps = {
 	tag: string
@@ -14,18 +23,45 @@ export default function BreadList({ tag }: BreadListProps) {
 		setSaltyBreads,
 		sweetBreads,
 		setSweetBreads,
-		calculateMass,
 		saltyBreadPrep,
 		sweetBreadPrep,
-		openAdd,
-		toggleAdd,
+		setSweetBreadPrep,
+		setSaltyBreadPrep,
 	} = useStateContext() as StateContextType
 
 	const isSweet = tag === 'sweet'
 	const breads = isSweet ? sweetBreads : saltyBreads
 	const setBreads = isSweet ? setSweetBreads : setSaltyBreads
 	const prep = isSweet ? sweetBreadPrep : saltyBreadPrep
+	const setBreadPrep = isSweet ? setSweetBreadPrep : setSaltyBreadPrep
+
 	const name = isSweet ? 'Dulce' : 'Salado'
+
+	const BREAD_REC = isSweet ? SWEET_REC : SALTY_REC
+	const MASS_FLOUR = isSweet ? MASS_FLOUR_SWEET : MASS_FLOUR_SALTY
+
+	const LSBreads = isSweet ? 'sweetBreads' : 'saltyBreads'
+	const LSPrep = isSweet ? 'sweetBreadPrep' : 'saltyBreadPrep'
+
+	const [openAdd, setOpenAdd] = useState(false)
+	const toggleAdd = () => setOpenAdd(!openAdd)
+	const [flour, setFlour] = useState<number>(0)
+	const [showPrep, setShowPrep] = useState(true)
+	const togglePrep = () => setShowPrep(!showPrep)
+
+	const calculatePrep = (flour: number) => {
+		const newPrep = new Prep(tag)
+		newPrep.calculateAmounts(breads, BREAD_REC, MASS_FLOUR, flour)
+
+		setBreadPrep(newPrep)
+		localStorage.setItem(LSPrep, JSON.stringify(newPrep))
+		setFlour(newPrep.flour.amount)
+	}
+
+	const handleFlourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = parseInt(e.target.value)
+		setFlour(value)
+	}
 
 	return (
 		<div className='mb-6'>
@@ -40,7 +76,7 @@ export default function BreadList({ tag }: BreadListProps) {
 								bread={bread}
 								breads={breads}
 								setBreads={setBreads}
-								tag={tag}
+								LSBreads={LSBreads}
 							/>
 						)
 					})}
@@ -58,60 +94,67 @@ export default function BreadList({ tag }: BreadListProps) {
 				<Button
 					size='sm'
 					onClick={() => {
-						calculateMass(tag)
+						calculatePrep(0)
 					}}
 				>
 					Calcular Preparacion
 				</Button>
 			)}
-			{openAdd && <AddBread tag={tag} />}
+			{openAdd && (
+				<AddBread
+					breads={breads}
+					setBreads={setBreads}
+					toggleAdd={toggleAdd}
+					LSBreads={LSBreads}
+				/>
+			)}
 			{prep && (
 				<div className='mt-4'>
-					<h3 className='text-lg font-bold underline'>Preparacion</h3>
-					<ul className='list-disc ml-5'>
-						<li>
-							Masa total: {prep.mass.amount} {prep.mass.unit}
-						</li>
-						<li>
-							Harina: {prep.flour.amount} {prep.flour.unit}
-						</li>
-						<li>
-							Agua: {prep.water.amount} {prep.water.unit}
-						</li>
-						<li>
-							Azucar: {prep.sugar.amount} {prep.sugar.unit}
-						</li>
-						<li>
-							Sal: {prep.salt.amount} {prep.salt.unit}
-						</li>
-						<li>
-							Manteca: {prep.butter.amount} {prep.butter.unit}
-						</li>
-						<li>
-							Vainilla: {prep.vanilla.amount} {prep.vanilla.unit}
-						</li>
-						{tag === 'sweet' ? (
-							<>
-								<li>
-									E. piña: {prep.pineappleEssence!.amount}{' '}
-									{prep.pineappleEssence!.unit}
+					<div
+						className='flex justify-between items-center'
+						onClick={togglePrep}
+					>
+						<h3 className='text-lg font-bold underline'>Preparacion {name}</h3>
+						<span>
+							{showPrep ? (
+								<BiChevronDown size={30} />
+							) : (
+								<BiChevronRight size={30} />
+							)}
+						</span>
+					</div>
+					<ul className={`${showPrep ? 'block' : 'hidden'}`}>
+						{Object.entries(prep).map(([key, ingredient]) => {
+							if (!ingredient) return null
+							const { name, amount, unit } = ingredient
+							if (key === 'flour')
+								return (
+									<li key={key} className='flex gap-2 items-center'>
+										<span>{name}: </span>
+										<input
+											className='border-2 border-black px-2 rounded outline-none py-[2px] w-24'
+											type='number'
+											value={flour}
+											onFocus={e => e.target.select()}
+											onChange={handleFlourChange}
+										/>{' '}
+										<Button
+											type='submit'
+											size='sm'
+											onClick={() => {
+												calculatePrep(flour)
+											}}
+										>
+											Recalcular
+										</Button>
+									</li>
+								)
+							return (
+								<li key={key}>
+									{name}: {amount} {unit}
 								</li>
-								<li>Canela: a su criterio</li>
-								<li>Anis chiquito: a su criterio</li>
-								<li>Colorante: a su criterio</li>
-							</>
-						) : (
-							<>
-								<li>
-									E. mantecado: {prep.butterEssence!.amount}{' '}
-									{prep.butterEssence!.unit}
-								</li>
-								<li>
-									E. mantequilla: {prep.margarineEssence!.amount}{' '}
-									{prep.margarineEssence!.unit}
-								</li>
-							</>
-						)}
+							)
+						})}
 						<li>Levadura: a su criterio</li>
 					</ul>
 				</div>
