@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import Container from '../../components/Container'
 import { Button } from '@material-tailwind/react'
-import { StateContextType, TAddBreadData } from '../../lib/types'
+import { StateContextType, TBreadData } from '../../lib/types'
 import { useStateContext } from '../../context/state-context'
 
 const initialAddBreadData = {
@@ -9,26 +9,28 @@ const initialAddBreadData = {
 	weight: 0,
 }
 
-type TAddBread = {
-	toggleAdd: () => void
+type AddBreadProps = {
 	tag: string
 }
 
-export default function AddBread({ toggleAdd, tag }: TAddBread) {
-	const { addBread } = useStateContext() as StateContextType
+export default function AddBread({ tag }: AddBreadProps) {
+	const { toggleAdd, addBread } = useStateContext() as StateContextType
+
 	const [addBreadData, setAddBreadData] =
-		useState<TAddBreadData>(initialAddBreadData)
+		useState<TBreadData>(initialAddBreadData)
 	const { name, weight } = addBreadData
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = e.target.value
+
 		setAddBreadData(prevFormData => ({
 			...prevFormData,
 			[e.target.name]: e.target.name === 'weight' ? parseInt(value) : value,
 		}))
 	}
+
 	return (
-		<div className='absolute z-10 top-0 left-0 right-0 bottom-0 bg-black/50 flex justify-center items-center'>
+		<div className='fixed z-10 top-0 left-0 right-0 bottom-0 bg-black/50 flex justify-center items-center'>
 			<Container>
 				<form
 					onSubmit={e => {
@@ -65,7 +67,7 @@ export default function AddBread({ toggleAdd, tag }: TAddBread) {
 							<Button size='sm' variant='outlined' onClick={toggleAdd}>
 								Cerrar
 							</Button>
-							<Button type='submit' size='sm'>
+							<Button type='submit' size='sm' disabled={!name || !weight}>
 								Añadir
 							</Button>
 						</div>
