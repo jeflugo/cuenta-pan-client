@@ -2,8 +2,8 @@ import { createContext, useContext, useEffect, useState } from 'react'
 import {
 	StateContextProviderProps,
 	StateContextType,
-	TAddBreadData,
 	TBread,
+	TBreadData,
 	TPrep,
 } from '../lib/types'
 
@@ -20,8 +20,7 @@ const initialSaltyBreads: TBread[] = [
 	{
 		id: v4(),
 		name: 'campesino',
-		title: 'Campesino',
-		weightInGr: 400,
+		weight: 400,
 		left: 0,
 		make: 0,
 	},
@@ -31,8 +30,7 @@ const initialSweetBreads: TBread[] = [
 	{
 		id: v4(),
 		name: 'moñito',
-		title: 'Moñito',
-		weightInGr: 80,
+		weight: 80,
 		left: 0,
 		make: 0,
 	},
@@ -98,8 +96,8 @@ export default function StateContextProvider({
 		}
 
 		let mass = 0
-		breads?.forEach(({ make, weightInGr }) => {
-			mass = mass + make * weightInGr
+		breads?.forEach(({ make, weight }) => {
+			mass = mass + make * weight
 		})
 
 		// Calculate prep
@@ -165,11 +163,38 @@ export default function StateContextProvider({
 
 	const addBread = (
 		e: React.FormEvent<HTMLFormElement>,
-		addBreadData: TAddBreadData,
+		{ name, weight }: TBreadData,
 		tag: string
 	) => {
 		e.preventDefault()
+
+		const newBread: TBread = {
+			id: v4(),
+			name,
+			weight,
+			left: 0,
+			make: 0,
+		}
+
+		if (tag === 'sweet') {
+			if (!sweetBreads) {
+				setSweetBreads([newBread])
+			} else {
+				setSweetBreads([...sweetBreads, newBread])
+			}
+		} else {
+			if (!saltyBreads) {
+				setSaltyBreads([newBread])
+			} else {
+				setSaltyBreads([...saltyBreads, newBread])
+			}
+		}
+
+		toast.success(`Pan "${name}" agregado.`)
 	}
+
+	const toggleAdd = () => setOpenAdd(!openAdd)
+	const toggleUpdate = () => setOpenUpdate(!openUpdate)
 
 	return (
 		<StateContext.Provider
@@ -183,7 +208,13 @@ export default function StateContextProvider({
 				sweetBreadPrep,
 
 				calculateMass,
+
 				addBread,
+
+				openAdd,
+				toggleAdd,
+				openUpdate,
+				toggleUpdate,
 			}}
 		>
 			{children}
