@@ -1,23 +1,37 @@
 import { useState } from 'react'
-import { TBread } from '../../lib/types'
+import { StateContextType, TBread } from '../../lib/types'
 import { BiPencil, BiTrash } from 'react-icons/bi'
+import { useStateContext } from '../../context/state-context'
+import toast from 'react-hot-toast'
+import UpdateBread from './UpdateBread'
 
 type BreadFieldProps = {
 	bread: TBread
 	breads: TBread[]
 	setBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
+	tag: string
 }
 
-export default function BreadField({
+export default function Bread({
 	bread,
 	breads,
 	setBreads,
+	tag,
 }: BreadFieldProps) {
-	const { title, weightInGr } = bread
+	const { id, name, weight } = bread
 	const [inputData, setInputData] = useState({
 		left: 0,
 		make: 0,
 	})
+
+	const {
+		sweetBreads,
+		saltyBreads,
+		setSweetBreads,
+		setSaltyBreads,
+		openUpdate,
+		toggleUpdate,
+	} = useStateContext() as StateContextType
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		// Find index
@@ -37,20 +51,31 @@ export default function BreadField({
 		setInputData({ ...inputData, [e.target.name]: value })
 	}
 
+	const deleteBread = () => {
+		if (tag === 'sweet') {
+			if (sweetBreads!.length === 1) setSweetBreads(null)
+			else setSweetBreads(sweetBreads!.filter(bread => bread.id !== id))
+		} else {
+			if (saltyBreads!.length === 1) setSaltyBreads(null)
+			else setSaltyBreads(saltyBreads!.filter(bread => bread.id !== id))
+		}
+		toast.success(`Pan "${name}" eliminado.`)
+	}
+
 	return (
 		<div className='flex gap-1 items-center'>
 			<input
 				className='border-2 border-black px-2 rounded outline-none py-[2px] w-28'
 				type='text'
-				name='title'
-				value={title}
+				name='name'
+				value={name}
 				readOnly
 			/>
 			<input
 				className='border-2 border-black px-2 rounded outline-none py-[2px] w-16'
 				type='text'
 				name='weight'
-				value={weightInGr}
+				value={weight}
 				readOnly
 			/>
 			<input
@@ -68,12 +93,13 @@ export default function BreadField({
 				onChange={handleChange}
 			/>
 
-			<button className='ml-2'>
+			<button className='ml-2' onClick={toggleUpdate}>
 				<BiPencil size={20} />
 			</button>
-			<button>
+			<button onClick={deleteBread}>
 				<BiTrash size={20} />
 			</button>
+			{openUpdate && <UpdateBread name={name} weight={weight} tag={tag} />}
 		</div>
 	)
 }
