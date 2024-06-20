@@ -12,6 +12,7 @@ class Prep {
 	pineappleEssence?: { name: string; unit: string; amount: number }
 	butterEssence?: { name: string; unit: string; amount: number }
 	margarineEssence?: { name: string; unit: string; amount: number }
+	yeast: { name: string; unit: string; amount: number }
 
 	constructor(tag: string) {
 		this.mass = { name: 'Masa', unit: 'g', amount: 0 }
@@ -21,6 +22,7 @@ class Prep {
 		this.salt = { name: 'Sal', unit: 'g', amount: 0 }
 		this.butter = { name: 'Mantequilla', unit: 'g', amount: 0 }
 		this.vanilla = { name: 'Vainilla', unit: 'tapa', amount: 0 }
+		this.yeast = { name: 'Levadura', unit: 'g', amount: 0 }
 
 		if (tag === 'sweet') {
 			this.pineappleEssence = { name: 'E. piña', unit: 'tapa', amount: 0 }
@@ -36,6 +38,7 @@ class Prep {
 	calculateAmounts(
 		breads: TBread[] | null,
 		breadRec: TPrep,
+		baseYeast: number,
 		massFlour: number,
 		flour: number
 	) {
@@ -63,6 +66,9 @@ class Prep {
 		)
 		this.butter.amount = Math.floor(
 			(breadRec.butter.amount / breadRec.flour.amount) * this.flour.amount
+		)
+		this.yeast.amount = parseFloat(
+			((baseYeast / breadRec.flour.amount) * this.flour.amount).toFixed(3)
 		)
 		this.vanilla.amount = parseFloat(
 			(

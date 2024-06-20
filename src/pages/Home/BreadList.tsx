@@ -1,6 +1,6 @@
 import { Button } from '@material-tailwind/react'
 import { useStateContext } from '../../context/state-context'
-import { StateContextType, TBread } from '../../lib/types'
+import { StateContextType, TBread, TPrep } from '../../lib/types'
 import Bread from './Bread'
 import AddBread from './AddBread'
 import { useState } from 'react'
@@ -46,7 +46,8 @@ export default function BreadList({ tag }: BreadListProps) {
 
 	const [openAdd, setOpenAdd] = useState(false)
 	const toggleAdd = () => setOpenAdd(!openAdd)
-	const [flour, setFlour] = useState<number>(0)
+	const [flour, setFlour] = useState<number>(prep?.flour.amount || 0)
+	const [baseYeast, setBaseYeast] = useState<number>(BREAD_REC.yeast.amount)
 	const [showPrep, setShowPrep] = useState(true)
 	const togglePrep = () => setShowPrep(!showPrep)
 
@@ -55,6 +56,7 @@ export default function BreadList({ tag }: BreadListProps) {
 		const calculated = newPrep.calculateAmounts(
 			breads,
 			BREAD_REC,
+			baseYeast,
 			MASS_FLOUR,
 			flour
 		)
@@ -69,6 +71,25 @@ export default function BreadList({ tag }: BreadListProps) {
 	const handleFlourChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const value = parseInt(e.target.value)
 		setFlour(value)
+	}
+
+	const handleYeastChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const value = parseInt(e.target.value)
+		setBaseYeast(value)
+	}
+
+	const recalculateYeast = () => {
+		if (prep) {
+			const newYeast = parseFloat(
+				((baseYeast / BREAD_REC.flour.amount) * prep.flour.amount).toFixed(3)
+			)
+			const newPrep: TPrep = {
+				...prep,
+				yeast: { ...prep.yeast, amount: newYeast },
+			}
+			setBreadPrep(newPrep)
+			localStorage.setItem(LSPrep, JSON.stringify(newPrep))
+		}
 	}
 
 	const resetList = () => {
@@ -157,6 +178,37 @@ export default function BreadList({ tag }: BreadListProps) {
 						{Object.entries(prep).map(([key, ingredient]) => {
 							if (!ingredient) return null
 							const { name, amount, unit } = ingredient
+							if (key === 'yeast')
+								return (
+									<li key={key}>
+										<div>{name}</div>
+										<div className='ml-4'>
+											<div className='flex gap-2 items-center mb-1'>
+												<div>Base: </div>
+												<input
+													className='border-2 border-black px-2 rounded outline-none py-[2px] w-16'
+													type='number'
+													value={baseYeast}
+													onFocus={e => e.target.select()}
+													onChange={handleYeastChange}
+												/>{' '}
+												<Button
+													type='submit'
+													size='sm'
+													onClick={recalculateYeast}
+												>
+													Recalcular
+												</Button>
+											</div>
+											<div>
+												<span>Cantidad: </span>
+												<span>
+													{ingredient.amount} {ingredient.unit}
+												</span>
+											</div>
+										</div>
+									</li>
+								)
 							if (key === 'flour')
 								return (
 									<li key={key} className='flex gap-2 items-center'>
@@ -185,7 +237,6 @@ export default function BreadList({ tag }: BreadListProps) {
 								</li>
 							)
 						})}
-						<li>Levadura: a su criterio</li>
 					</ul>
 				</div>
 			)}

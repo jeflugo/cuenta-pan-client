@@ -73,6 +73,11 @@ export type TPrep = {
 		unit: string
 		amount: number
 	}
+	yeast: {
+		name: string
+		unit: string
+		amount: number
+	}
 }
 
 export type TBreadData = {

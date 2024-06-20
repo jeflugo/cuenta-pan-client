@@ -46,6 +46,11 @@ const SALTY_REC: TPrep = {
 		unit: 'tapa',
 		amount: 3,
 	},
+	yeast: {
+		name: 'Levadura',
+		unit: 'g',
+		amount: 35,
+	},
 }
 
 const SWEET_REC: TPrep = {
@@ -88,6 +93,11 @@ const SWEET_REC: TPrep = {
 		name: 'E. piña',
 		unit: 'tapa',
 		amount: 4,
+	},
+	yeast: {
+		name: 'Levadura',
+		unit: 'g',
+		amount: 35,
 	},
 }
 
