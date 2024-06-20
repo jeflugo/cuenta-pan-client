@@ -1,6 +1,6 @@
 import { Button } from '@material-tailwind/react'
 import { useStateContext } from '../../context/state-context'
-import { StateContextType, TPrep } from '../../lib/types'
+import { StateContextType } from '../../lib/types'
 import Bread from './Bread'
 import AddBread from './AddBread'
 import { useState } from 'react'

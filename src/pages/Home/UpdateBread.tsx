@@ -2,7 +2,6 @@ import { useState } from 'react'
 import Container from '../../components/Container'
 import { Button } from '@material-tailwind/react'
 import { TBreadData, TBread } from '../../lib/types'
-import { v4 } from 'uuid'
 import toast from 'react-hot-toast'
 
 type UpdateBreadProps = {
@@ -10,6 +9,7 @@ type UpdateBreadProps = {
 	breads: TBread[] | null
 	setBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
 	toggleUpdate: () => void
+	LSBreads: string
 }
 
 export default function UpdateBread({
@@ -17,6 +17,7 @@ export default function UpdateBread({
 	breads,
 	setBreads,
 	toggleUpdate,
+	LSBreads
 }: UpdateBreadProps) {
 	const [updateBreadData, setUpdateBreadData] = useState<TBreadData>({
 		name: bread.name,
@@ -41,6 +42,7 @@ export default function UpdateBread({
 		newBreads[index].name = updateBreadData.name
 		newBreads[index].weight = updateBreadData.weight
 		setBreads(newBreads)
+		localStorage.setItem(LSBreads, JSON.stringify(newBreads))
 
 		toast.success(`Pan "${updateBreadData.name}" actualizado.`)
 		toggleUpdate()

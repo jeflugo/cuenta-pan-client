@@ -47,8 +47,16 @@ export default function Bread({
 	}
 
 	const deleteBread = () => {
-		if (breads!.length === 1) setBreads(null)
-		else setBreads(breads!.filter(bread => bread.id !== id))
+		let newBreads
+		if (breads!.length === 1) {
+			newBreads = null
+			localStorage.removeItem(LSBreads)
+		} else {
+			newBreads = breads!.filter(bread => bread.id !== id)
+			localStorage.setItem(LSBreads, JSON.stringify(newBreads))
+		}
+
+		setBreads(newBreads)
 		toast.success(`Pan "${name}" eliminado.`)
 	}
 
@@ -97,6 +105,7 @@ export default function Bread({
 					toggleUpdate={toggleUpdate}
 					breads={breads}
 					setBreads={setBreads}
+					LSBreads={LSBreads}
 				/>
 			)}
 		</div>
