@@ -45,8 +45,9 @@ class Prep {
 		})
 
 		if (isNaN(mass) || mass === 0) {
+			console.log(mass)
 			toast.error('Lista vacia')
-			return
+			return false
 		}
 
 		this.mass.amount = mass
@@ -100,6 +101,7 @@ class Prep {
 				)
 			}
 		}
+		return true
 	}
 }
 

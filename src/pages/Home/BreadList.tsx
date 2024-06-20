@@ -51,7 +51,14 @@ export default function BreadList({ tag }: BreadListProps) {
 
 	const calculatePrep = (flour: number) => {
 		const newPrep = new Prep(tag)
-		newPrep.calculateAmounts(breads, BREAD_REC, MASS_FLOUR, flour)
+		const calculated = newPrep.calculateAmounts(
+			breads,
+			BREAD_REC,
+			MASS_FLOUR,
+			flour
+		)
+
+		if (!calculated) return
 
 		setBreadPrep(newPrep)
 		localStorage.setItem(LSPrep, JSON.stringify(newPrep))
