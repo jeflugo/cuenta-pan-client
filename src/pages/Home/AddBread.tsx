@@ -85,6 +85,7 @@ export default function AddBread({
 								name='weight'
 								value={weight}
 								onChange={handleChange}
+								onFocus={e => e.target.select()}
 								className='border-2 border-black px-2 rounded outline-none py-[2px] w-full'
 							/>
 						</label>
