@@ -17,7 +17,7 @@ export default function UpdateBread({
 	breads,
 	setBreads,
 	toggleUpdate,
-	LSBreads
+	LSBreads,
 }: UpdateBreadProps) {
 	const [updateBreadData, setUpdateBreadData] = useState<TBreadData>({
 		name: bread.name,
