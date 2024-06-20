@@ -12,6 +12,7 @@ import {
 } from '../../constants'
 import { BiChevronDown, BiChevronRight } from 'react-icons/bi'
 import { Prep } from '../../clasees'
+import toast from 'react-hot-toast'
 
 type BreadListProps = {
 	tag: string
@@ -78,6 +79,8 @@ export default function BreadList({ tag }: BreadListProps) {
 		setBreadPrep(null)
 		localStorage.setItem(LSBreads, JSON.stringify(newBreads))
 		localStorage.removeItem(LSPrep)
+
+		toast.success('Lista reiniciada.')
 	}
 
 	const emptylist = () =>
