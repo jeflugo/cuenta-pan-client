@@ -3,7 +3,7 @@ import { useStateContext } from '../../context/state-context'
 import { StateContextType, TBread, TPrep } from '../../lib/types'
 import Bread from './Bread'
 import AddBread from './AddBread'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import {
 	MASS_FLOUR_SALTY,
 	MASS_FLOUR_SWEET,
@@ -46,10 +46,16 @@ export default function BreadList({ tag }: BreadListProps) {
 
 	const [openAdd, setOpenAdd] = useState(false)
 	const toggleAdd = () => setOpenAdd(!openAdd)
-	const [flour, setFlour] = useState<number>(prep?.flour.amount || 0)
+	const [flour, setFlour] = useState<number>(0)
 	const [baseYeast, setBaseYeast] = useState<number>(BREAD_REC.yeast.amount)
 	const [showPrep, setShowPrep] = useState(true)
 	const togglePrep = () => setShowPrep(!showPrep)
+
+	useEffect(() => {
+		if (prep) {
+			setFlour(prep.flour.amount)
+		}
+	}, [prep])
 
 	const calculatePrep = (flour: number) => {
 		const newPrep = new Prep(tag)
@@ -197,7 +203,7 @@ export default function BreadList({ tag }: BreadListProps) {
 													size='sm'
 													onClick={recalculateYeast}
 												>
-													Recalcular
+													Calcular lev
 												</Button>
 											</div>
 											<div>
