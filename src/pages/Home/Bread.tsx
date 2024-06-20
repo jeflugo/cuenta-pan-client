@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { TBread } from '../../lib/types'
 import { BiPencil, BiTrash } from 'react-icons/bi'
 import toast from 'react-hot-toast'
@@ -59,6 +59,10 @@ export default function Bread({
 		setBreads(newBreads)
 		toast.success(`Pan "${name}" eliminado.`)
 	}
+
+	useEffect(() => {
+		setInputData({ left: bread.left, make: bread.make })
+	}, [bread])
 
 	return (
 		<div className='flex gap-1 items-center'>

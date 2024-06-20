@@ -1,6 +1,6 @@
 import { Button } from '@material-tailwind/react'
 import { useStateContext } from '../../context/state-context'
-import { StateContextType } from '../../lib/types'
+import { StateContextType, TBread } from '../../lib/types'
 import Bread from './Bread'
 import AddBread from './AddBread'
 import { useState } from 'react'
@@ -70,9 +70,29 @@ export default function BreadList({ tag }: BreadListProps) {
 		setFlour(value)
 	}
 
+	const resetList = () => {
+		const newBreads: TBread[] = breads!.map(bread => {
+			return { ...bread, left: 0, make: 0 }
+		})
+		setBreads(newBreads)
+		setBreadPrep(null)
+		localStorage.setItem(LSBreads, JSON.stringify(newBreads))
+		localStorage.removeItem(LSPrep)
+	}
+
+	const emptylist = () =>
+		breads!.every(bread => bread.left === 0 && bread.make === 0)
+
 	return (
 		<div className='mb-6'>
-			<h2 className='text-xl font-medium mb-1'>Pan {name}</h2>
+			<div className='flex gap-3 items-center mb-3'>
+				<h2 className='text-3xl font-semibold'>Pan {name}</h2>
+				{breads && !emptylist() && (
+					<Button size='sm' onClick={resetList} variant='outlined'>
+						Reiniciar
+					</Button>
+				)}
+			</div>
 
 			{breads && (
 				<div className='mb-4 gap-2 flex flex-col'>
