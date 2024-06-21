@@ -1,12 +1,12 @@
 import Container from '../../components/Container'
-import BreadList from './BreadList'
+import Breads from './Breads'
 
 export default function Home() {
 	return (
 		<div className='py-3'>
 			<Container>
-				<BreadList tag='sweet' />
-				<BreadList tag='salty' />
+				<Breads tag='sweet' />
+				<Breads tag='salty' />
 			</Container>
 		</div>
 	)
