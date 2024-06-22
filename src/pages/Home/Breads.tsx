@@ -12,6 +12,7 @@ import {
 import { Prep } from '../../clasees'
 import toast from 'react-hot-toast'
 import Loading from '../../components/Loading'
+import CopyButton from '../../components/CopyButton'
 const BreadList = lazy(() => import('./BreadList'))
 
 const PreparationDetails = lazy(() => import('./PreparationDetails'))
@@ -125,9 +126,12 @@ export default function Breads({ tag }: BreadListProps) {
 			<div className='flex gap-3 items-center mb-3'>
 				<h2 className='text-3xl font-semibold'>Pan {name}</h2>
 				{breads && !emptylist() && (
-					<Button size='sm' onClick={resetList} variant='outlined'>
-						Reiniciar
-					</Button>
+					<>
+						<Button size='sm' onClick={resetList} variant='outlined'>
+							Reiniciar
+						</Button>
+						<CopyButton breads={breads} />
+					</>
 				)}
 			</div>
 
