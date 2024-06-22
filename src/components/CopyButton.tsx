@@ -27,7 +27,7 @@ export default function CopyButton({ breads }: CopyButtonProps) {
 		<>
 			{text && (
 				<CopyToClipboard text={text} onCopy={handleCopy}>
-					<Button size='sm'>Copiar pan</Button>
+					<Button size='sm'>Copiar</Button>
 				</CopyToClipboard>
 			)}
 		</>
