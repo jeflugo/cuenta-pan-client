@@ -1,7 +1,6 @@
-import { Button, Spinner } from '@material-tailwind/react'
+import { Button } from '@material-tailwind/react'
 import { useStateContext } from '../../context/state-context'
 import { StateContextType, TBread, TPrep } from '../../lib/types'
-import Bread from './Bread'
 import AddBread from './AddBread'
 import { Suspense, lazy, useEffect, useState } from 'react'
 import {
@@ -12,6 +11,8 @@ import {
 } from '../../constants'
 import { Prep } from '../../clasees'
 import toast from 'react-hot-toast'
+import Loading from '../../components/Loading'
+const BreadList = lazy(() => import('./BreadList'))
 
 const PreparationDetails = lazy(() => import('./PreparationDetails'))
 
@@ -55,6 +56,13 @@ export default function Breads({ tag }: BreadListProps) {
 	useEffect(() => {
 		if (prep) setFlour(prep.flour.amount)
 	}, [prep])
+
+	useEffect(() => {
+		if (!breads) {
+			setBreadPrep(null)
+			localStorage.removeItem(LSPrep)
+		}
+	}, [breads, setBreadPrep, LSPrep])
 
 	const calculatePrep = (flour: number) => {
 		const newPrep = new Prep(tag)
@@ -124,19 +132,13 @@ export default function Breads({ tag }: BreadListProps) {
 			</div>
 
 			{breads && (
-				<div className='mb-4 gap-2 flex flex-col'>
-					{breads.map(bread => {
-						return (
-							<Bread
-								key={bread.id}
-								bread={bread}
-								breads={breads}
-								setBreads={setBreads}
-								LSBreads={LSBreads}
-							/>
-						)
-					})}
-				</div>
+				<Suspense fallback={<Loading paddingY='10' />}>
+					<BreadList
+						breads={breads}
+						setBreads={setBreads}
+						LSBreads={LSBreads}
+					/>
+				</Suspense>
 			)}
 
 			<div
@@ -165,7 +167,7 @@ export default function Breads({ tag }: BreadListProps) {
 				/>
 			)}
 			{prep && (
-				<Suspense fallback={<Spinner />}>
+				<Suspense fallback={<Loading paddingY='10' />}>
 					<PreparationDetails
 						name={name}
 						showPrep={showPrep}
