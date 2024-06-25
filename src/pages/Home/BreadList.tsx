@@ -86,6 +86,7 @@ export default function BreadList({
 	}
 
 	const handleDragEnd = (event: DragEndEvent) => {
+		setIsDragging(false)
 		const { active, over } = event
 		if (active.id !== over?.id) {
 			setBreads(items => {
