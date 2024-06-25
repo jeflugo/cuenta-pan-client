@@ -70,7 +70,7 @@ export default function BreadList({
 		useSensor(PointerSensor),
 		useSensor(TouchSensor, {
 			activationConstraint: {
-				delay: 250,
+				delay: 1000,
 				tolerance: 5,
 			},
 		}),
