@@ -1,4 +1,4 @@
-import React, { Suspense, lazy, useEffect } from 'react'
+import React, { Suspense, lazy, useEffect, useState } from 'react'
 import { TBread } from '../../lib/types'
 import Loading from '../../components/Loading'
 import {
@@ -66,6 +66,8 @@ export default function BreadList({
 	setBreads,
 	LSBreads,
 }: BreadListProps) {
+	const [isDragging, setIsDragging] = useState(false)
+
 	const sensors = useSensors(
 		useSensor(PointerSensor),
 		useSensor(TouchSensor, {
@@ -78,6 +80,10 @@ export default function BreadList({
 			coordinateGetter: sortableKeyboardCoordinates,
 		})
 	)
+
+	const handleDragStart = () => {
+		setIsDragging(true)
+	}
 
 	const handleDragEnd = (event: DragEndEvent) => {
 		const { active, over } = event
@@ -92,17 +98,24 @@ export default function BreadList({
 	}
 
 	useEffect(() => {
-		const handleTouchMove = (event: TouchEvent) => event.preventDefault()
+		const handleTouchMove = (event: TouchEvent) => {
+			if (isDragging) {
+				event.preventDefault()
+			}
+		}
 
 		document.addEventListener('touchmove', handleTouchMove, { passive: false })
 
-		return () => document.removeEventListener('touchmove', handleTouchMove)
-	}, [])
+		return () => {
+			document.removeEventListener('touchmove', handleTouchMove)
+		}
+	}, [isDragging])
 
 	return (
 		<DndContext
 			sensors={sensors}
 			collisionDetection={closestCenter}
+			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}
 		>
 			<SortableContext items={breads.map(bread => bread.id)}>
