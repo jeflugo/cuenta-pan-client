@@ -3,6 +3,9 @@ import { TBread } from '../../lib/types'
 import { BiPencil, BiTrash } from 'react-icons/bi'
 import toast from 'react-hot-toast'
 import UpdateBread from './UpdateBread'
+import { useSortable } from '@dnd-kit/sortable'
+import { LuChevronsUpDown } from 'react-icons/lu'
+import { CSS } from '@dnd-kit/utilities'
 
 type BreadFieldProps = {
 	bread: TBread
@@ -64,54 +67,68 @@ export default function Bread({
 		setInputData({ left: bread.left, make: bread.make })
 	}, [bread])
 
-	return (
-		<div className='flex gap-1 items-center'>
-			<input
-				className='border-2 border-black px-2 rounded outline-none py-[2px] w-24'
-				type='text'
-				name='name'
-				value={name}
-				readOnly
-			/>
-			<input
-				className='border-2 border-black px-2 rounded outline-none py-[2px] w-14'
-				type='text'
-				name='weight'
-				value={weight}
-				readOnly
-			/>
-			<input
-				className='border-2 border-black px-2 rounded outline-none py-[2px] w-10'
-				type='number'
-				name='left'
-				value={inputData.left}
-				onChange={handleChange}
-				onFocus={e => e.target.select()}
-			/>
-			<input
-				className='border-2 border-black px-2 rounded outline-none py-[2px] w-10'
-				type='number'
-				name='make'
-				value={inputData.make}
-				onChange={handleChange}
-				onFocus={e => e.target.select()}
-			/>
+	const { attributes, listeners, setNodeRef, transform, transition } =
+		useSortable({ id: bread.id })
 
-			<button onClick={toggleUpdate}>
-				<BiPencil size={20} />
-			</button>
-			<button onClick={deleteBread}>
-				<BiTrash size={20} />
-			</button>
-			{openUpdate && (
-				<UpdateBread
-					bread={bread}
-					toggleUpdate={toggleUpdate}
-					breads={breads}
-					setBreads={setBreads}
-					LSBreads={LSBreads}
+	const style = {
+		transform: CSS.Transform.toString(transform),
+		transition,
+	}
+
+	return (
+		<div className='flex items-center' style={style}>
+			<div ref={setNodeRef} {...attributes} {...listeners}>
+				<LuChevronsUpDown size={20} />
+			</div>
+
+			<div className='flex gap-1 items-center'>
+				<input
+					className='border-2 border-black px-2 rounded outline-none py-[2px] min-w-24 w-full'
+					type='text'
+					name='name'
+					value={name}
+					readOnly
 				/>
-			)}
+				<input
+					className='border-2 border-black px-2 rounded outline-none py-[2px] w-14'
+					type='text'
+					name='weight'
+					value={weight}
+					readOnly
+				/>
+				<input
+					className='border-2 border-black px-2 rounded outline-none py-[2px] w-10'
+					type='number'
+					name='left'
+					value={inputData.left}
+					onChange={handleChange}
+					onFocus={e => e.target.select()}
+				/>
+				<input
+					className='border-2 border-black px-2 rounded outline-none py-[2px] w-10'
+					type='number'
+					name='make'
+					value={inputData.make}
+					onChange={handleChange}
+					onFocus={e => e.target.select()}
+				/>
+
+				<button onClick={toggleUpdate}>
+					<BiPencil size={20} />
+				</button>
+				<button onClick={deleteBread}>
+					<BiTrash size={20} />
+				</button>
+				{openUpdate && (
+					<UpdateBread
+						bread={bread}
+						toggleUpdate={toggleUpdate}
+						breads={breads}
+						setBreads={setBreads}
+						LSBreads={LSBreads}
+					/>
+				)}
+			</div>
 		</div>
 	)
 }

@@ -11,58 +11,19 @@ import {
 	arrayMove,
 	SortableContext,
 	sortableKeyboardCoordinates,
-	useSortable,
 } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
 import {
 	KeyboardSensor,
 	PointerSensor,
 	useSensor,
 	useSensors,
 } from '@dnd-kit/core'
-import { LuChevronsUpDown } from 'react-icons/lu'
 const Bread = lazy(() => import('./Bread'))
 
 type BreadListProps = {
 	breads: TBread[]
 	setBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
 	LSBreads: string
-}
-
-function SortableItem({
-	bread,
-	breads,
-	setBreads,
-	LSBreads,
-}: {
-	bread: TBread
-	breads: TBread[]
-	setBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
-	LSBreads: string
-}) {
-	const { attributes, listeners, setNodeRef, transform, transition } =
-		useSortable({ id: bread.id })
-
-	const style = {
-		transform: CSS.Transform.toString(transform),
-		transition,
-	}
-
-	return (
-		<Suspense fallback={<Loading paddingY='5' />}>
-			<div className='flex items-center' style={style}>
-				<div ref={setNodeRef} {...attributes} {...listeners}>
-					<LuChevronsUpDown size={20} />
-				</div>
-				<Bread
-					bread={bread}
-					breads={breads}
-					setBreads={setBreads}
-					LSBreads={LSBreads}
-				/>
-			</div>
-		</Suspense>
-	)
 }
 
 export default function BreadList({
@@ -125,13 +86,14 @@ export default function BreadList({
 			<SortableContext items={breads.map(bread => bread.id)}>
 				<div className='mb-4 gap-2 flex flex-col'>
 					{breads.map(bread => (
-						<SortableItem
-							key={bread.id}
-							bread={bread}
-							breads={breads}
-							setBreads={setBreads}
-							LSBreads={LSBreads}
-						/>
+						<Suspense key={bread.id} fallback={<Loading paddingY='5' />}>
+							<Bread
+								bread={bread}
+								breads={breads}
+								setBreads={setBreads}
+								LSBreads={LSBreads}
+							/>
+						</Suspense>
 					))}
 				</div>
 			</SortableContext>
