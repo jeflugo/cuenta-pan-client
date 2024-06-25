@@ -93,12 +93,11 @@ export default function BreadList({
 		setIsDragging(false)
 		const { active, over } = event
 		if (active.id !== over?.id) {
-			setBreads(items => {
-				if (!items) return null
-				const oldIndex = items.findIndex(item => item.id === active.id)
-				const newIndex = items.findIndex(item => item.id === over?.id)
-				return arrayMove(items, oldIndex, newIndex)
-			})
+			const oldIndex = breads.findIndex(item => item.id === active.id)
+			const newIndex = breads.findIndex(item => item.id === over?.id)
+			const newBreads = arrayMove(breads, oldIndex, newIndex)
+			setBreads(newBreads)
+			localStorage.setItem(LSBreads, JSON.stringify(newBreads))
 		}
 	}
 
