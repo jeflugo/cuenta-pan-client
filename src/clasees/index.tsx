@@ -20,17 +20,17 @@ class Prep {
 		this.water = { name: 'Agua', unit: 'g', amount: 0 }
 		this.sugar = { name: 'Azucar', unit: 'g', amount: 0 }
 		this.salt = { name: 'Sal', unit: 'g', amount: 0 }
-		this.butter = { name: 'Mantequilla', unit: 'g', amount: 0 }
-		this.vanilla = { name: 'Vainilla', unit: 'tapa', amount: 0 }
+		this.butter = { name: 'Manteca', unit: 'g', amount: 0 }
+		this.vanilla = { name: 'Vainilla', unit: 'tapas', amount: 0 }
 		this.yeast = { name: 'Levadura', unit: 'g', amount: 0 }
 
 		if (tag === 'sweet') {
-			this.pineappleEssence = { name: 'E. piña', unit: 'tapa', amount: 0 }
+			this.pineappleEssence = { name: 'E. piña', unit: 'tapas', amount: 0 }
 		} else {
-			this.butterEssence = { name: 'E. mantecado', unit: 'tapa', amount: 0 }
+			this.butterEssence = { name: 'E. mantecado', unit: 'tapas', amount: 0 }
 			this.margarineEssence = {
 				name: 'E. mantequilla',
-				unit: 'tapa',
+				unit: 'tapas',
 				amount: 0,
 			}
 		}

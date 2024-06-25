@@ -18,7 +18,7 @@ export default function Header() {
 			<Container>
 				<div className='flex justify-between items-center'>
 					<h1 className='text-2xl font-semibold'>Cuenta Pan</h1>
-					<p className='relative ml-4'>
+					<div className='relative ml-4'>
 						<BiInfoCircle size={24} onClick={toggleInfo} />
 						{showInfo && (
 							<div className='fixed z-10 top-0 left-0 w-full rounded shadow-md py-2 px-5 bg-white overflow-y-scroll h-screen'>
@@ -56,7 +56,7 @@ export default function Header() {
 								</div>
 							</div>
 						)}
-					</p>
+					</div>
 				</div>
 			</Container>
 		</header>
