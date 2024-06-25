@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react'
+import React, { Suspense, lazy, useEffect } from 'react'
 import { TBread } from '../../lib/types'
 import Loading from '../../components/Loading'
 import {
@@ -68,7 +68,12 @@ export default function BreadList({
 }: BreadListProps) {
 	const sensors = useSensors(
 		useSensor(PointerSensor),
-		useSensor(TouchSensor),
+		useSensor(TouchSensor, {
+			activationConstraint: {
+				delay: 250,
+				tolerance: 5,
+			},
+		}),
 		useSensor(KeyboardSensor, {
 			coordinateGetter: sortableKeyboardCoordinates,
 		})
@@ -85,6 +90,14 @@ export default function BreadList({
 			})
 		}
 	}
+
+	useEffect(() => {
+		const handleTouchMove = (event: TouchEvent) => event.preventDefault()
+
+		document.addEventListener('touchmove', handleTouchMove, { passive: false })
+
+		return () => document.removeEventListener('touchmove', handleTouchMove)
+	}, [])
 
 	return (
 		<DndContext
