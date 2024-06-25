@@ -1,7 +1,12 @@
 import React, { Suspense, lazy } from 'react'
 import { TBread } from '../../lib/types'
 import Loading from '../../components/Loading'
-import { DndContext, DragEndEvent, closestCenter } from '@dnd-kit/core'
+import {
+	DndContext,
+	DragEndEvent,
+	TouchSensor,
+	closestCenter,
+} from '@dnd-kit/core'
 import {
 	arrayMove,
 	SortableContext,
@@ -63,6 +68,7 @@ export default function BreadList({
 }: BreadListProps) {
 	const sensors = useSensors(
 		useSensor(PointerSensor),
+		useSensor(TouchSensor),
 		useSensor(KeyboardSensor, {
 			coordinateGetter: sortableKeyboardCoordinates,
 		})
