@@ -52,7 +52,7 @@ function SortableItem({
 		<Suspense fallback={<Loading paddingY='5' />}>
 			<div className='flex items-center' style={style}>
 				<div ref={setNodeRef} {...attributes} {...listeners}>
-					<LuChevronsUpDown />
+					<LuChevronsUpDown size={20} />
 				</div>
 				<Bread
 					bread={bread}

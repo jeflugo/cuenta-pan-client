@@ -67,21 +67,21 @@ export default function Bread({
 	return (
 		<div className='flex gap-1 items-center'>
 			<input
-				className='border-2 border-black px-2 rounded outline-none py-[2px] w-28'
+				className='border-2 border-black px-2 rounded outline-none py-[2px] w-24'
 				type='text'
 				name='name'
 				value={name}
 				readOnly
 			/>
 			<input
-				className='border-2 border-black px-2 rounded outline-none py-[2px] w-16'
+				className='border-2 border-black px-2 rounded outline-none py-[2px] w-14'
 				type='text'
 				name='weight'
 				value={weight}
 				readOnly
 			/>
 			<input
-				className='border-2 border-black px-2 rounded outline-none py-[2px] w-12'
+				className='border-2 border-black px-2 rounded outline-none py-[2px] w-10'
 				type='number'
 				name='left'
 				value={inputData.left}
@@ -89,7 +89,7 @@ export default function Bread({
 				onFocus={e => e.target.select()}
 			/>
 			<input
-				className='border-2 border-black px-2 rounded outline-none py-[2px] w-12'
+				className='border-2 border-black px-2 rounded outline-none py-[2px] w-10'
 				type='number'
 				name='make'
 				value={inputData.make}
@@ -97,7 +97,7 @@ export default function Bread({
 				onFocus={e => e.target.select()}
 			/>
 
-			<button className='ml-2' onClick={toggleUpdate}>
+			<button onClick={toggleUpdate}>
 				<BiPencil size={20} />
 			</button>
 			<button onClick={deleteBread}>
