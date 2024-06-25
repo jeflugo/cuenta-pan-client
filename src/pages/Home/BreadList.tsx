@@ -20,6 +20,7 @@ import {
 	useSensor,
 	useSensors,
 } from '@dnd-kit/core'
+import { LuChevronsUpDown } from 'react-icons/lu'
 const Bread = lazy(() => import('./Bread'))
 
 type BreadListProps = {
@@ -48,16 +49,19 @@ function SortableItem({
 	}
 
 	return (
-		<div ref={setNodeRef} style={style} {...attributes} {...listeners}>
-			<Suspense fallback={<Loading paddingY='5' />}>
+		<Suspense fallback={<Loading paddingY='5' />}>
+			<div className='flex items-center' style={style}>
+				<div ref={setNodeRef} {...attributes} {...listeners}>
+					<LuChevronsUpDown />
+				</div>
 				<Bread
 					bread={bread}
 					breads={breads}
 					setBreads={setBreads}
 					LSBreads={LSBreads}
 				/>
-			</Suspense>
-		</div>
+			</div>
+		</Suspense>
 	)
 }
 
@@ -72,7 +76,7 @@ export default function BreadList({
 		useSensor(PointerSensor),
 		useSensor(TouchSensor, {
 			activationConstraint: {
-				delay: 1000,
+				delay: 250,
 				tolerance: 5,
 			},
 		}),
