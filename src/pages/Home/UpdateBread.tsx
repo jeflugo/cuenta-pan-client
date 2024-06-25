@@ -49,7 +49,7 @@ export default function UpdateBread({
 	}
 
 	return (
-		<div className='absolute z-10 top-0 left-0 right-0 bottom-0 bg-black/50 flex justify-center items-center'>
+		<div className='fixed z-10 top-0 left-0 right-0 bottom-0 bg-black/50 flex justify-center items-center'>
 			<Container>
 				<form onSubmit={updateBread} className='py-4 px-6 bg-white rounded'>
 					<div className='flex gap-2 mb-4'>
