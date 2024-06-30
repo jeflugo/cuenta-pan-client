@@ -4,6 +4,7 @@ import {
 	StateContextType,
 	TBread,
 	TPrep,
+	TSavedBreads,
 } from '../lib/types'
 
 // const initialSaltyBreads: TBread[] = [
@@ -42,21 +43,37 @@ const initialSweetBreadPrep: TPrep = JSON.parse(
 	localStorage.getItem('sweetBreadPrep') || 'null'
 )
 
+const initialSavedSweetBreads: TSavedBreads | null = JSON.parse(
+	localStorage.getItem('savedSweetBreads') || 'null'
+)
+const initialSavedSaltyBreads: TSavedBreads | null = JSON.parse(
+	localStorage.getItem('savedSaltyBreads') || 'null'
+)
+
 const StateContext = createContext<StateContextType | null>(null)
 
 export default function StateContextProvider({
 	children,
 }: StateContextProviderProps) {
 	const [saltyBreads, setSaltyBreads] = useState<TBread[] | null>(null)
+	const [savedSaltyBreads, setSavedSaltyBreads] = useState<TSavedBreads | null>(
+		null
+	)
 	const [saltyBreadPrep, setSaltyBreadPrep] = useState<TPrep | null>(null)
 
 	const [sweetBreads, setSweetBreads] = useState<TBread[] | null>(null)
+	const [savedSweetBreads, setSavedSweetBreads] = useState<TSavedBreads | null>(
+		null
+	)
 	const [sweetBreadPrep, setSweetBreadPrep] = useState<TPrep | null>(null)
 
 	useEffect(() => {
 		setSaltyBreads(initialSaltyBreads)
-		setSweetBreads(initialSweetBreads)
+		setSavedSaltyBreads(initialSavedSaltyBreads)
 		setSaltyBreadPrep(initialSaltyBreadPrep)
+
+		setSweetBreads(initialSweetBreads)
+		setSavedSweetBreads(initialSavedSweetBreads)
 		setSweetBreadPrep(initialSweetBreadPrep)
 	}, [])
 
@@ -65,11 +82,15 @@ export default function StateContextProvider({
 			value={{
 				saltyBreads,
 				setSaltyBreads,
+				savedSweetBreads,
+				setSavedSweetBreads,
 				saltyBreadPrep,
 				setSaltyBreadPrep,
 
 				sweetBreads,
 				setSweetBreads,
+				savedSaltyBreads,
+				setSavedSaltyBreads,
 				sweetBreadPrep,
 				setSweetBreadPrep,
 			}}

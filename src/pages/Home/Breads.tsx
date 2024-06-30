@@ -2,7 +2,7 @@ import { Button } from '@material-tailwind/react'
 import { useStateContext } from '../../context/state-context'
 import { StateContextType, TBread, TPrep } from '../../lib/types'
 import AddBread from './AddBread'
-import { Suspense, lazy, useEffect, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
 import {
 	MASS_FLOUR_SALTY,
 	MASS_FLOUR_SWEET,
@@ -13,6 +13,7 @@ import { Prep } from '../../clasees'
 import toast from 'react-hot-toast'
 import Loading from '../../components/Loading'
 import CopyButton from '../../components/CopyButton'
+import BreadHistory from './BreadHistory'
 const BreadList = lazy(() => import('./BreadList'))
 
 const PreparationDetails = lazy(() => import('./PreparationDetails'))
@@ -25,17 +26,24 @@ export default function Breads({ tag }: BreadListProps) {
 	const {
 		saltyBreads,
 		setSaltyBreads,
+		savedSaltyBreads,
+		setSavedSaltyBreads,
+		saltyBreadPrep,
+		setSaltyBreadPrep,
+
 		sweetBreads,
 		setSweetBreads,
-		saltyBreadPrep,
+		savedSweetBreads,
+		setSavedSweetBreads,
 		sweetBreadPrep,
 		setSweetBreadPrep,
-		setSaltyBreadPrep,
 	} = useStateContext() as StateContextType
 
 	const isSweet = tag === 'sweet'
 	const breads = isSweet ? sweetBreads : saltyBreads
 	const setBreads = isSweet ? setSweetBreads : setSaltyBreads
+	const savedBreads = isSweet ? savedSweetBreads : savedSaltyBreads
+	const setSavedBreads = isSweet ? setSavedSweetBreads : setSavedSaltyBreads
 	const prep = isSweet ? sweetBreadPrep : saltyBreadPrep
 	const setBreadPrep = isSweet ? setSweetBreadPrep : setSaltyBreadPrep
 
@@ -45,6 +53,7 @@ export default function Breads({ tag }: BreadListProps) {
 	const MASS_FLOUR = isSweet ? MASS_FLOUR_SWEET : MASS_FLOUR_SALTY
 
 	const LSBreads = isSweet ? 'sweetBreads' : 'saltyBreads'
+	const LSSavedBreads = isSweet ? 'savedSweetBreads' : 'savedSaltyBreads'
 	const LSPrep = isSweet ? 'sweetBreadPrep' : 'saltyBreadPrep'
 
 	const [openAdd, setOpenAdd] = useState(false)
@@ -106,7 +115,25 @@ export default function Breads({ tag }: BreadListProps) {
 		}
 	}
 
-	const resetList = () => {
+	const emptylist = () =>
+		breads!.every(bread => bread.left === 0 && bread.make === 0)
+
+	const saveBreadListWithDate = useCallback(() => {
+		const yesterday = new Date(new Date().setDate(new Date().getDate() - 1))
+			.toISOString()
+			.split('T')[0] // Get yesterday's date in YYYY-MM-DD format
+
+		const newSavedBreads = JSON.parse(
+			localStorage.getItem(LSSavedBreads) || '{}'
+		)
+		newSavedBreads[yesterday] = breads
+		localStorage.setItem(LSSavedBreads, JSON.stringify(newSavedBreads))
+		setSavedBreads(newSavedBreads)
+	}, [breads, LSSavedBreads, setSavedBreads])
+
+	const resetList = useCallback(() => {
+		saveBreadListWithDate() // Save the current list before resetting
+
 		const newBreads: TBread[] = breads!.map(bread => {
 			return { ...bread, left: 0, make: 0 }
 		})
@@ -116,13 +143,23 @@ export default function Breads({ tag }: BreadListProps) {
 		localStorage.removeItem(LSPrep)
 
 		toast.success('Lista reiniciada.')
-	}
+	}, [LSBreads, breads, saveBreadListWithDate, setBreadPrep, setBreads, LSPrep])
 
-	const emptylist = () =>
-		breads!.every(bread => bread.left === 0 && bread.make === 0)
+	useEffect(() => {
+		const today = new Date().toISOString().split('T')[0]
+		const lastReset = localStorage.getItem('lastReset')
+
+		if (lastReset !== today) {
+			if (breads) {
+				resetList()
+				localStorage.setItem('lastReset', today)
+			}
+		}
+	}, [breads, resetList])
 
 	return (
 		<div className='mb-6'>
+			{savedBreads && <BreadHistory savedBreads={savedBreads} />}
 			<div className='flex gap-3 items-center mb-3'>
 				<h2 className='text-3xl font-semibold'>Pan {name}</h2>
 				{breads && !emptylist() && (
