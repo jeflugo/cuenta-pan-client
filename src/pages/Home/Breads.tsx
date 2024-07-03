@@ -16,6 +16,7 @@ import CopyButton from '../../components/CopyButton'
 
 import BreadHistory from './BreadHistory'
 import { FaHistory } from 'react-icons/fa'
+import ConfirmReset from './ConfirmReset'
 const BreadList = lazy(() => import('./BreadList'))
 const PreparationDetails = lazy(() => import('./PreparationDetails'))
 
@@ -66,8 +67,11 @@ export default function Breads({ tag }: BreadListProps) {
 	const [openAdd, setOpenAdd] = useState(false)
 	const toggleAdd = () => setOpenAdd(!openAdd)
 
-	const [showPrep, setShowPrep] = useState(true)
-	const togglePrep = () => setShowPrep(!showPrep)
+	const [openPrep, setOpenPrep] = useState(true)
+	const togglePrep = () => setOpenPrep(!openPrep)
+
+	const [openConfirmReset, setopenConfirmReset] = useState(false)
+	const toggleConfirmReset = () => setopenConfirmReset(!openConfirmReset)
 
 	const [yesterdayBreads, setYesterdayBreads] = useState<TBread[] | null>(null)
 	useEffect(() => {
@@ -152,8 +156,6 @@ export default function Breads({ tag }: BreadListProps) {
 	}, [breads, LSSavedBreads, setSavedBreads])
 
 	const resetList = useCallback(() => {
-		saveBreadListWithDate() // Save the current list before resetting
-
 		const newBreads: TBread[] = breads!.map(bread => {
 			return { ...bread, left: 0, make: 0 }
 		})
@@ -163,7 +165,7 @@ export default function Breads({ tag }: BreadListProps) {
 		localStorage.removeItem(LSPrep)
 
 		toast.success('Lista reiniciada.')
-	}, [LSBreads, breads, saveBreadListWithDate, setBreadPrep, setBreads, LSPrep])
+	}, [LSBreads, breads, setBreadPrep, setBreads, LSPrep])
 
 	useEffect(() => {
 		const today = new Date()
@@ -173,11 +175,12 @@ export default function Breads({ tag }: BreadListProps) {
 
 		if (lastReset !== today) {
 			if (breads) {
+				saveBreadListWithDate()
 				resetList()
 				localStorage.setItem('lastReset', today)
 			}
 		}
-	}, [breads, resetList])
+	}, [breads, saveBreadListWithDate, resetList])
 
 	return (
 		<div className='mb-6'>
@@ -197,6 +200,13 @@ export default function Breads({ tag }: BreadListProps) {
 					LSBreads={LSBreads}
 				/>
 			)}
+			{openConfirmReset && (
+				<ConfirmReset
+					toggleConfirmReset={toggleConfirmReset}
+					resetList={resetList}
+				/>
+			)}
+
 			<div className='flex gap-3 mb-3 justify-between items-center'>
 				<div className='flex gap-3 items-center'>
 					<h2 className='text-3xl font-semibold'>Pan {name}</h2>
@@ -204,7 +214,7 @@ export default function Breads({ tag }: BreadListProps) {
 				</div>
 				{breads && !emptylist() && (
 					<div className='flex gap-1'>
-						<Button size='sm' onClick={resetList} variant='outlined'>
+						<Button size='sm' onClick={toggleConfirmReset} variant='outlined'>
 							Reiniciar
 						</Button>
 						<CopyButton breads={breads} />
@@ -244,7 +254,7 @@ export default function Breads({ tag }: BreadListProps) {
 				<Suspense fallback={<Loading paddingY='10' />}>
 					<PreparationDetails
 						name={name}
-						showPrep={showPrep}
+						showPrep={openPrep}
 						togglePrep={togglePrep}
 						prep={prep}
 						baseYeast={baseYeast}
