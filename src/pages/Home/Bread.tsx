@@ -7,6 +7,7 @@ import { useSortable } from '@dnd-kit/sortable'
 import { LuChevronsUpDown } from 'react-icons/lu'
 import { CSS } from '@dnd-kit/utilities'
 import { Tooltip } from '@material-tailwind/react'
+import DeleteBread from './DeleteBread'
 
 type BreadFieldProps = {
 	bread: TBread
@@ -30,8 +31,10 @@ export default function Bread({
 	})
 
 	const [openUpdate, setOpenUpdate] = useState(false)
-
 	const toggleUpdate = () => setOpenUpdate(!openUpdate)
+
+	const [openDelete, setOpenDelete] = useState(false)
+	const toggleDelete = () => setOpenDelete(!openDelete)
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		// Find index
@@ -124,7 +127,7 @@ export default function Bread({
 				<button onClick={toggleUpdate}>
 					<BiPencil size={20} />
 				</button>
-				<button onClick={deleteBread}>
+				<button onClick={toggleDelete}>
 					<BiTrash size={20} />
 				</button>
 				{openUpdate && (
@@ -134,6 +137,13 @@ export default function Bread({
 						breads={breads}
 						setBreads={setBreads}
 						LSBreads={LSBreads}
+					/>
+				)}
+				{openDelete && (
+					<DeleteBread
+						deleteBread={deleteBread}
+						name={name}
+						toggleDelete={toggleDelete}
 					/>
 				)}
 			</div>
