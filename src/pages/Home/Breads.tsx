@@ -197,16 +197,18 @@ export default function Breads({ tag }: BreadListProps) {
 					LSBreads={LSBreads}
 				/>
 			)}
-			<div className='flex gap-3 items-center mb-3'>
-				<h2 className='text-3xl font-semibold'>Pan {name}</h2>
-				{savedBreads && <FaHistory onClick={toggleHistory} />}
+			<div className='flex gap-3 mb-3 justify-between items-center'>
+				<div className='flex gap-3 items-center'>
+					<h2 className='text-3xl font-semibold'>Pan {name}</h2>
+					{savedBreads && <FaHistory onClick={toggleHistory} />}
+				</div>
 				{breads && !emptylist() && (
-					<>
+					<div className='flex gap-1'>
 						<Button size='sm' onClick={resetList} variant='outlined'>
 							Reiniciar
 						</Button>
 						<CopyButton breads={breads} />
-					</>
+					</div>
 				)}
 			</div>
 
