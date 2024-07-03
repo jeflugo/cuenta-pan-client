@@ -24,12 +24,14 @@ type BreadListProps = {
 	breads: TBread[]
 	setBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
 	LSBreads: string
+	yesterdayBreads: TBread[] | null
 }
 
 export default function BreadList({
 	breads,
 	setBreads,
 	LSBreads,
+	yesterdayBreads,
 }: BreadListProps) {
 	const [isDragging, setIsDragging] = useState(false)
 
@@ -76,6 +78,12 @@ export default function BreadList({
 		}
 	}, [isDragging])
 
+	const findYBread = (id: string) => {
+		const yBread = yesterdayBreads?.find(bread => bread.id === id)
+		if (!yBread) return null
+		return yBread
+	}
+
 	return (
 		<DndContext
 			sensors={sensors}
@@ -92,6 +100,7 @@ export default function BreadList({
 								breads={breads}
 								setBreads={setBreads}
 								LSBreads={LSBreads}
+								yBread={findYBread(bread.id)}
 							/>
 						</Suspense>
 					))}

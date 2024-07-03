@@ -21,7 +21,7 @@ export default function Header() {
 					<div className='relative ml-4'>
 						<BiInfoCircle size={24} onClick={toggleInfo} />
 						{showInfo && (
-							<div className='fixed z-10 top-0 left-0 w-full rounded shadow-md py-2 px-5 bg-white overflow-y-scroll h-screen'>
+							<div className='fixed z-10 top-0 left-0 w-full py-2 px-5 bg-white overflow-y-scroll h-screen'>
 								<div className='relative'>
 									<h2 className='text-center text-xl font-medium'>
 										Recetas base

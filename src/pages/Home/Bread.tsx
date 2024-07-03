@@ -6,12 +6,14 @@ import UpdateBread from './UpdateBread'
 import { useSortable } from '@dnd-kit/sortable'
 import { LuChevronsUpDown } from 'react-icons/lu'
 import { CSS } from '@dnd-kit/utilities'
+import { Tooltip } from '@material-tailwind/react'
 
 type BreadFieldProps = {
 	bread: TBread
 	breads: TBread[]
 	setBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
 	LSBreads: string
+	yBread: TBread | null
 }
 
 export default function Bread({
@@ -19,6 +21,7 @@ export default function Bread({
 	breads,
 	setBreads,
 	LSBreads,
+	yBread,
 }: BreadFieldProps) {
 	const { id, name, weight } = bread
 	const [inputData, setInputData] = useState({
@@ -104,14 +107,19 @@ export default function Bread({
 					onChange={handleChange}
 					onFocus={e => e.target.select()}
 				/>
-				<input
-					className='border-2 border-black px-2 rounded outline-none py-[2px] w-10'
-					type='number'
-					name='make'
-					value={inputData.make}
-					onChange={handleChange}
-					onFocus={e => e.target.select()}
-				/>
+				<Tooltip
+					content={`Ayer: ${yBread?.make ? `${yBread.make}` : 'nada'}`}
+					placement='left'
+				>
+					<input
+						className='border-2 border-black px-2 rounded outline-none py-[2px] w-10'
+						type='number'
+						name='make'
+						value={inputData.make}
+						onChange={handleChange}
+						onFocus={e => e.target.select()}
+					/>
+				</Tooltip>
 
 				<button onClick={toggleUpdate}>
 					<BiPencil size={20} />

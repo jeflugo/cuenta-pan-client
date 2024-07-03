@@ -13,9 +13,10 @@ import { Prep } from '../../clasees'
 import toast from 'react-hot-toast'
 import Loading from '../../components/Loading'
 import CopyButton from '../../components/CopyButton'
-import BreadHistory from './BreadHistory'
-const BreadList = lazy(() => import('./BreadList'))
 
+import BreadHistory from './BreadHistory'
+import { FaHistory } from 'react-icons/fa'
+const BreadList = lazy(() => import('./BreadList'))
 const PreparationDetails = lazy(() => import('./PreparationDetails'))
 
 type BreadListProps = {
@@ -47,7 +48,7 @@ export default function Breads({ tag }: BreadListProps) {
 	const prep = isSweet ? sweetBreadPrep : saltyBreadPrep
 	const setBreadPrep = isSweet ? setSweetBreadPrep : setSaltyBreadPrep
 
-	const name = isSweet ? 'Dulce' : 'Salado'
+	const name = isSweet ? 'dulce' : 'salado'
 
 	const BREAD_REC = isSweet ? SWEET_REC : SALTY_REC
 	const MASS_FLOUR = isSweet ? MASS_FLOUR_SWEET : MASS_FLOUR_SALTY
@@ -56,12 +57,28 @@ export default function Breads({ tag }: BreadListProps) {
 	const LSSavedBreads = isSweet ? 'savedSweetBreads' : 'savedSaltyBreads'
 	const LSPrep = isSweet ? 'sweetBreadPrep' : 'saltyBreadPrep'
 
-	const [openAdd, setOpenAdd] = useState(false)
-	const toggleAdd = () => setOpenAdd(!openAdd)
 	const [flour, setFlour] = useState<number>(0)
 	const [baseYeast, setBaseYeast] = useState<number>(BREAD_REC.yeast.amount)
+
+	const [openHistory, setOpenHistory] = useState(false)
+	const toggleHistory = () => setOpenHistory(!openHistory)
+
+	const [openAdd, setOpenAdd] = useState(false)
+	const toggleAdd = () => setOpenAdd(!openAdd)
+
 	const [showPrep, setShowPrep] = useState(true)
 	const togglePrep = () => setShowPrep(!showPrep)
+
+	const [yesterdayBreads, setYesterdayBreads] = useState<TBread[] | null>(null)
+	useEffect(() => {
+		if (savedBreads) {
+			const yesterdayDate =
+				Object.keys(savedBreads)[Object.keys(savedBreads).length - 1]
+			const yBreads = savedBreads[yesterdayDate]
+
+			setYesterdayBreads(yBreads)
+		}
+	}, [savedBreads])
 
 	useEffect(() => {
 		if (prep) setFlour(prep.flour.amount)
@@ -120,8 +137,11 @@ export default function Breads({ tag }: BreadListProps) {
 
 	const saveBreadListWithDate = useCallback(() => {
 		const yesterday = new Date(new Date().setDate(new Date().getDate() - 1))
-			.toISOString()
-			.split('T')[0] // Get yesterday's date in YYYY-MM-DD format
+			.toLocaleString('en-US', { timeZone: 'America/Caracas' })
+			.split(',')[0]
+			.split('/')
+			.reverse()
+			.join('-') // Get yesterday's date in YYYY-MM-DD format in Venezuelan time
 
 		const newSavedBreads = JSON.parse(
 			localStorage.getItem(LSSavedBreads) || '{}'
@@ -146,7 +166,9 @@ export default function Breads({ tag }: BreadListProps) {
 	}, [LSBreads, breads, saveBreadListWithDate, setBreadPrep, setBreads, LSPrep])
 
 	useEffect(() => {
-		const today = new Date().toISOString().split('T')[0]
+		const today = new Date()
+			.toLocaleString('en-US', { timeZone: 'America/Caracas' })
+			.split(',')[0]
 		const lastReset = localStorage.getItem('lastReset')
 
 		if (lastReset !== today) {
@@ -159,9 +181,25 @@ export default function Breads({ tag }: BreadListProps) {
 
 	return (
 		<div className='mb-6'>
-			{savedBreads && <BreadHistory savedBreads={savedBreads} />}
+			{/* *POP UPS */}
+			{openHistory && (
+				<BreadHistory
+					savedBreads={savedBreads}
+					toggleHistory={toggleHistory}
+					name={name}
+				/>
+			)}
+			{openAdd && (
+				<AddBread
+					breads={breads}
+					setBreads={setBreads}
+					toggleAdd={toggleAdd}
+					LSBreads={LSBreads}
+				/>
+			)}
 			<div className='flex gap-3 items-center mb-3'>
 				<h2 className='text-3xl font-semibold'>Pan {name}</h2>
+				{savedBreads && <FaHistory onClick={toggleHistory} />}
 				{breads && !emptylist() && (
 					<>
 						<Button size='sm' onClick={resetList} variant='outlined'>
@@ -178,6 +216,7 @@ export default function Breads({ tag }: BreadListProps) {
 						breads={breads}
 						setBreads={setBreads}
 						LSBreads={LSBreads}
+						yesterdayBreads={yesterdayBreads}
 					/>
 				</Suspense>
 			)}
@@ -198,14 +237,6 @@ export default function Breads({ tag }: BreadListProps) {
 				>
 					Calcular Preparacion
 				</Button>
-			)}
-			{openAdd && (
-				<AddBread
-					breads={breads}
-					setBreads={setBreads}
-					toggleAdd={toggleAdd}
-					LSBreads={LSBreads}
-				/>
 			)}
 			{prep && (
 				<Suspense fallback={<Loading paddingY='10' />}>
