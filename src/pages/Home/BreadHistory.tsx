@@ -35,12 +35,12 @@ const BreadHistory = ({
 
 			{savedBreads &&
 				Object.keys(savedBreads).map(date => (
-					<div key={date}>
-						<h3 className='text-xl'>{`${date} (${getWeekday(date)})`}</h3>
+					<div key={date} className='mb-2'>
+						<h3 className='text-xl underline'>{`${date} (${getWeekday(date)})`}</h3>
 						<ul>
 							{savedBreads[date].map(({ name, left, make }, index) => (
 								<li key={index}>
-									{name}: {left}/{make}
+									{name}: {left}/<span className='font-bold'>{make}</span>
 								</li>
 							))}
 						</ul>
