@@ -118,31 +118,6 @@ export default function Breads({ tag }: BreadListProps) {
 		setBreadPrep(newPrep)
 		localStorage.setItem(LSPrep, JSON.stringify(newPrep))
 		setFlour(newPrep.flour.amount)
-
-		breads!.forEach(bread => {
-			fetch(`${import.meta.env.VITE_SERVER_URL}/${LSBreads}/${bread.id}`, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					left: bread.left,
-					make: bread.make,
-				}),
-			})
-				.then(response => {
-					if (!response.ok) {
-						throw new Error('Failed to update bread')
-					}
-					return response.json()
-				})
-				.then(data => {
-					console.log(data)
-				})
-				.catch(error => {
-					console.error('Error updating bread:', error)
-				})
-		})
 	}
 
 	const handleFlourChange = (e: React.ChangeEvent<HTMLInputElement>) => {

@@ -36,6 +36,11 @@ export default function Bread({
 	const [openDelete, setOpenDelete] = useState(false)
 	const toggleDelete = () => setOpenDelete(!openDelete)
 
+	const [hasChange, setHasChange] = useState({
+		left: false,
+		make: false,
+	})
+
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		// Find index
 		const modifyBreadIndex = breads.findIndex(({ id }) => bread.id === id)
@@ -52,6 +57,39 @@ export default function Bread({
 
 		setBreads(modifiedBreads)
 		setInputData({ ...inputData, [e.target.name]: value })
+		setHasChange({ ...hasChange, [e.target.name]: true })
+	}
+
+	const handleBlur = (e: React.FocusEvent<HTMLInputElement>) => {
+		let inputHasChange = false
+		if (hasChange.left || hasChange.make) inputHasChange = true
+		if (!inputHasChange) return
+
+		const value = parseInt(e.target.value)
+		if (value === 0 || isNaN(value)) return
+
+		const changedValue = {
+			[e.target.name]: value,
+		}
+
+		fetch(`${import.meta.env.VITE_SERVER_URL}/${LSBreads}/${id}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(changedValue),
+		})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Failed to update bread')
+				}
+				return response.json()
+			})
+			.then(() => {})
+			.catch(error => {
+				console.error('Error updating bread:', error)
+			})
+		setHasChange({ ...hasChange, [e.target.name]: false })
 	}
 
 	const deleteBread = () => {
@@ -119,6 +157,7 @@ export default function Bread({
 					value={inputData.left}
 					onChange={handleChange}
 					onFocus={e => e.target.select()}
+					onBlur={handleBlur}
 				/>
 				<Tooltip
 					content={`Ayer: ${yBread?.make ? `${yBread.make}` : 'nada'}`}
@@ -131,6 +170,7 @@ export default function Bread({
 						value={inputData.make}
 						onChange={handleChange}
 						onFocus={e => e.target.select()}
+						onBlur={handleBlur}
 					/>
 				</Tooltip>
 
