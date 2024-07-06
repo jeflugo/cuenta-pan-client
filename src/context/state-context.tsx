@@ -16,17 +16,21 @@ const initialSweetBreadPrep: TPrep = JSON.parse(
 )
 
 const fetchInitialData = async (endpoint: string) => {
-	try {
-		const response = await fetch(
-			`${import.meta.env.VITE_SERVER_URL}/${endpoint}`
-		)
-		const data = await response.json()
-		// console.log(`${endpoint}: `, data)
-		return data
-	} catch (error) {
-		console.error('Error fetching initial data:', error)
-		return null
-	}
+	return fetch(`${import.meta.env.VITE_SERVER_URL}/${endpoint}`)
+		.then(response => {
+			if (!response.ok) {
+				throw new Error('Failed to fetch initial data')
+			}
+			return response.json()
+		})
+		.then(data => {
+			// console.log(`${endpoint}: `, data)
+			return data
+		})
+		.catch(error => {
+			console.error('Error fetching initial data:', error)
+			return null
+		})
 }
 
 const StateContext = createContext<StateContextType | null>(null)

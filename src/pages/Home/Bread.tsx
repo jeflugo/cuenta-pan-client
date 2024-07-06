@@ -51,7 +51,6 @@ export default function Bread({
 		}
 
 		setBreads(modifiedBreads)
-		localStorage.setItem(LSBreads, JSON.stringify(modifiedBreads))
 		setInputData({ ...inputData, [e.target.name]: value })
 	}
 

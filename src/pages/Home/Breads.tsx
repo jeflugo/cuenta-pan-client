@@ -63,7 +63,7 @@ export default function Breads({ tag }: BreadListProps) {
 	const MASS_FLOUR = isSweet ? MASS_FLOUR_SWEET : MASS_FLOUR_SALTY
 
 	const LSBreads = isSweet ? 'sweetBreads' : 'saltyBreads'
-	const LSSavedBreads = isSweet ? 'savedSweetBreads' : 'savedSaltyBreads'
+	const LSSavedBreadsArr = isSweet ? 'savedSweetBreads' : 'savedSaltyBreads'
 	const LSPrep = isSweet ? 'sweetBreadPrep' : 'saltyBreadPrep'
 
 	const LSLastReset = isSweet ? 'sweetBreadLR' : 'saltyBreadLR'
@@ -169,12 +169,13 @@ export default function Breads({ tag }: BreadListProps) {
 		}
 	}
 
-	const emptyList = useCallback(
-		() => breads!.every(bread => bread.left === 0 && bread.make === 0),
-		[breads]
-	)
+	const emptyList = useCallback(() => {
+		if (breads)
+			return breads.every(bread => bread.left === 0 && bread.make === 0)
+		return null
+	}, [breads])
 
-	const saveBreadListWithDate = useCallback(() => {
+	const saveBreadList = useCallback(() => {
 		const yesterday = new Date(new Date().setDate(new Date().getDate() - 1))
 			.toLocaleString('en-US', { timeZone: 'America/Caracas' })
 			.split(',')[0]
@@ -182,30 +183,50 @@ export default function Breads({ tag }: BreadListProps) {
 			.reverse()
 			.join('-') // Get yesterday's date in YYYY-MM-DD format in Venezuelan time
 
-		const newSavedBreadsArr = JSON.parse(
-			localStorage.getItem(LSSavedBreads) || '[]'
-		)
 		const newSavedBreads: TSavedBreads = {
 			date: yesterday,
 			breads: breads!,
 		}
-		newSavedBreadsArr.push(newSavedBreads)
-
-		localStorage.setItem(LSSavedBreads, JSON.stringify(newSavedBreadsArr))
-		setSavedBreadsArr(newSavedBreadsArr)
-	}, [breads, LSSavedBreads, setSavedBreadsArr])
+		fetch(`${import.meta.env.VITE_SERVER_URL}/${LSSavedBreadsArr}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(newSavedBreads),
+		})
+			.then(response => response.json())
+			.then(data => {
+				let newSavedBreadsArr
+				if (!savedBreadsArr) newSavedBreadsArr = [data]
+				else newSavedBreadsArr = [...savedBreadsArr, data]
+				setSavedBreadsArr(newSavedBreadsArr)
+			})
+			.catch(error => {
+				console.error('Error saving bread list:', error)
+			})
+	}, [breads, LSSavedBreadsArr, setSavedBreadsArr, savedBreadsArr])
 
 	const resetList = useCallback(() => {
-		const newBreads: TBread[] = breads!.map(bread => {
-			return { ...bread, left: 0, make: 0 }
+		fetch(`${import.meta.env.VITE_SERVER_URL}/${LSBreads}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({}),
 		})
-		setBreads(newBreads)
-		setBreadPrep(null)
-		localStorage.setItem(LSBreads, JSON.stringify(newBreads))
-		localStorage.removeItem(LSPrep)
+			.then(response => response.json())
+			.then(data => {
+				console.log(data)
+				setBreads(data)
+				setBreadPrep(null)
+				localStorage.removeItem(LSPrep)
+			})
+			.catch(error => {
+				console.error('Error resetting bread list:', error)
+			})
 
 		toast.success('Lista reiniciada.')
-	}, [LSBreads, breads, setBreadPrep, setBreads, LSPrep])
+	}, [LSBreads, setBreadPrep, setBreads, LSPrep])
 
 	useEffect(() => {
 		const today = new Date()
@@ -213,12 +234,14 @@ export default function Breads({ tag }: BreadListProps) {
 			.split(',')[0]
 		const lastReset = localStorage.getItem(LSLastReset)
 
+		if (!lastReset) localStorage.setItem(LSLastReset, today)
+
 		if (lastReset !== today && breads && !emptyList()) {
-			saveBreadListWithDate()
+			saveBreadList()
 			resetList()
 			localStorage.setItem(LSLastReset, today)
 		}
-	}, [breads, saveBreadListWithDate, resetList, LSLastReset, emptyList])
+	}, [breads, saveBreadList, resetList, LSLastReset, emptyList])
 
 	return (
 		<div className='mb-6'>
