@@ -7,34 +7,6 @@ import {
 	TSavedBreadsArr,
 } from '../lib/types'
 
-// const initialSaltyBreads: TBread[] = [
-// 	{
-// 		id: v4(),
-// 		name: 'campesino',
-// 		weight: 400,
-// 		left: 0,
-// 		make: 0,
-// 	},
-// ]
-
-// const initialSweetBreads: TBread[] = [
-// 	{
-// 		id: v4(),
-// 		name: 'moñito',
-// 		weight: 80,
-// 		left: 0,
-// 		make: 0,
-// 	},
-// ]
-
-const initialSaltyBreads: TBread[] = JSON.parse(
-	localStorage.getItem('saltyBreads') || 'null'
-)
-
-const initialSweetBreads: TBread[] = JSON.parse(
-	localStorage.getItem('sweetBreads') || 'null'
-)
-
 const initialSaltyBreadPrep: TPrep = JSON.parse(
 	localStorage.getItem('saltyBreadPrep') || 'null'
 )
@@ -43,12 +15,19 @@ const initialSweetBreadPrep: TPrep = JSON.parse(
 	localStorage.getItem('sweetBreadPrep') || 'null'
 )
 
-const initialSavedSweetBreadsArr: TSavedBreadsArr | null = JSON.parse(
-	localStorage.getItem('savedSweetBreads') || 'null'
-)
-const initialSavedSaltyBreadsArr: TSavedBreadsArr | null = JSON.parse(
-	localStorage.getItem('savedSaltyBreads') || 'null'
-)
+const fetchInitialData = async (endpoint: string) => {
+	try {
+		const response = await fetch(
+			`${import.meta.env.VITE_SERVER_URL}/${endpoint}`
+		)
+		const data = await response.json()
+		// console.log(`${endpoint}: `, data)
+		return data
+	} catch (error) {
+		console.error('Error fetching initial data:', error)
+		return null
+	}
+}
 
 const StateContext = createContext<StateContextType | null>(null)
 
@@ -66,12 +45,20 @@ export default function StateContextProvider({
 	const [sweetBreadPrep, setSweetBreadPrep] = useState<TPrep | null>(null)
 
 	useEffect(() => {
-		setSaltyBreads(initialSaltyBreads)
-		setSavedSaltyBreadsArr(initialSavedSaltyBreadsArr)
-		setSaltyBreadPrep(initialSaltyBreadPrep)
+		const fetchData = async () => {
+			const saltyBreadsData = await fetchInitialData('saltyBreads')
+			const savedSaltyBreadsArrData = await fetchInitialData('savedSaltyBreads')
+			const sweetBreadsData = await fetchInitialData('sweetBreads')
+			const savedSweetBreadsArrData = await fetchInitialData('savedSweetBreads')
 
-		setSweetBreads(initialSweetBreads)
-		setSavedSweetBreadsArr(initialSavedSweetBreadsArr)
+			setSaltyBreads(saltyBreadsData)
+			setSavedSaltyBreadsArr(savedSaltyBreadsArrData)
+			setSweetBreads(sweetBreadsData)
+			setSavedSweetBreadsArr(savedSweetBreadsArrData)
+		}
+		fetchData()
+
+		setSaltyBreadPrep(initialSaltyBreadPrep)
 		setSweetBreadPrep(initialSweetBreadPrep)
 	}, [])
 

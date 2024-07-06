@@ -144,8 +144,10 @@ export default function Breads({ tag }: BreadListProps) {
 		}
 	}
 
-	const emptyList = () =>
-		breads!.every(bread => bread.left === 0 && bread.make === 0)
+	const emptyList = useCallback(
+		() => breads!.every(bread => bread.left === 0 && bread.make === 0),
+		[breads]
+	)
 
 	const saveBreadListWithDate = useCallback(() => {
 		const yesterday = new Date(new Date().setDate(new Date().getDate() - 1))
@@ -186,14 +188,12 @@ export default function Breads({ tag }: BreadListProps) {
 			.split(',')[0]
 		const lastReset = localStorage.getItem(LSLastReset)
 
-		if (lastReset !== today) {
-			if (breads) {
-				saveBreadListWithDate()
-				resetList()
-				localStorage.setItem(LSLastReset, today)
-			}
+		if (lastReset !== today && breads && !emptyList()) {
+			saveBreadListWithDate()
+			resetList()
+			localStorage.setItem(LSLastReset, today)
 		}
-	}, [breads, saveBreadListWithDate, resetList, LSLastReset])
+	}, [breads, saveBreadListWithDate, resetList, LSLastReset, emptyList])
 
 	return (
 		<div className='mb-6'>
