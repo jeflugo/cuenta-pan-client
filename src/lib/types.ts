@@ -23,7 +23,7 @@ export type StateContextType = {
 }
 
 export type TBread = {
-	id: string
+	id?: string
 	name: string
 	weight: number
 	left: number
@@ -93,11 +93,8 @@ export type TBreadData = {
 	weight: number
 }
 
-// export type TSavedBreads = {
-// 	[date: string]: TBread[]
-// }
-
 export type TSavedBreads = {
+	id?: string
 	date: string
 	breads: TBread[]
 }

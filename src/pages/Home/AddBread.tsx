@@ -2,7 +2,7 @@ import { useState } from 'react'
 import Container from '../../components/Container'
 import { Button } from '@material-tailwind/react'
 import { TBread, TBreadData } from '../../lib/types'
-import { v4 } from 'uuid'
+// import { v4 } from 'uuid'
 import toast from 'react-hot-toast'
 
 const initialAddBreadData = {
@@ -40,25 +40,38 @@ export default function AddBread({
 		e.preventDefault()
 
 		const newBread: TBread = {
-			id: v4(),
 			name,
 			weight,
 			left: 0,
 			make: 0,
 		}
 
-		let newBreads: TBread[]
+		// console.log(import.meta.env.VITE_SERVER_URL)
+		fetch(`${import.meta.env.VITE_SERVER_URL}/${LSBreads}`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify(newBread),
+		})
+			.then(response => response.json())
+			.then(data => {
+				let newBreads: TBread[]
 
-		if (!breads) {
-			newBreads = [newBread]
-		} else {
-			newBreads = [...breads, newBread]
-		}
+				if (!breads) {
+					newBreads = [data]
+				} else {
+					newBreads = [...breads, data]
+				}
+				setBreads(newBreads)
 
-		setBreads(newBreads)
-		localStorage.setItem(LSBreads, JSON.stringify(newBreads))
-		toast.success(`Pan "${name}" agregado.`)
-		toggleAdd()
+				toast.success(`Pan "${name}" agregado.`)
+				toggleAdd()
+			})
+			.catch(error => {
+				toast.error('Error de base de datos')
+				console.log(`Error: ${error}`)
+			})
 	}
 
 	return (

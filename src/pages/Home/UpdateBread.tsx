@@ -37,12 +37,43 @@ export default function UpdateBread({
 	const updateBread = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault()
 
+		fetch(`${import.meta.env.VITE_SERVER_URL}/${LSBreads}/${id}`, {
+			method: 'PUT',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				name: updateBreadData.name,
+				weight: updateBreadData.weight,
+			}),
+		})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Failed to update bread')
+				}
+				return response.json()
+			})
+			.then(data => {
+				const newBreads = breads!.map(bread => bread)
+				const index = breads!.findIndex(bread => bread.id === data.id)
+				newBreads[index].name = data.name
+				newBreads[index].weight = data.weight
+				setBreads(newBreads)
+
+				toast.success(`Pan "${data.name}" actualizado.`)
+				toggleUpdate()
+			})
+			.catch(error => {
+				console.error('Error updating bread:', error)
+				toast.error('Error al actualizar el pan.')
+			})
+
 		const newBreads = breads!.map(bread => bread)
 		const index = breads!.findIndex(bread => bread.id === id)
 		newBreads[index].name = updateBreadData.name
 		newBreads[index].weight = updateBreadData.weight
 		setBreads(newBreads)
-		localStorage.setItem(LSBreads, JSON.stringify(newBreads))
+		// localStorage.setItem(LSBreads, JSON.stringify(newBreads))
 
 		toast.success(`Pan "${updateBreadData.name}" actualizado.`)
 		toggleUpdate()

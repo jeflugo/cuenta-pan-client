@@ -91,7 +91,7 @@ export default function BreadList({
 			onDragStart={handleDragStart}
 			onDragEnd={handleDragEnd}
 		>
-			<SortableContext items={breads.map(bread => bread.id)}>
+			<SortableContext items={breads.map(bread => bread.id!)}>
 				<div className='mb-4 gap-2 flex flex-col'>
 					{breads.map(bread => (
 						<Suspense key={bread.id} fallback={<Loading paddingY='5' />}>
@@ -100,7 +100,7 @@ export default function BreadList({
 								breads={breads}
 								setBreads={setBreads}
 								LSBreads={LSBreads}
-								yBread={findYBread(bread.id)}
+								yBread={findYBread(bread.id!)}
 							/>
 						</Suspense>
 					))}

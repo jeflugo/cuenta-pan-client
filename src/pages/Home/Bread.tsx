@@ -57,16 +57,27 @@ export default function Bread({
 
 	const deleteBread = () => {
 		let newBreads
-		if (breads!.length === 1) {
-			newBreads = null
-			localStorage.removeItem(LSBreads)
-		} else {
-			newBreads = breads!.filter(bread => bread.id !== id)
-			localStorage.setItem(LSBreads, JSON.stringify(newBreads))
-		}
-
-		setBreads(newBreads)
-		toast.success(`Pan "${name}" eliminado.`)
+		fetch(`${import.meta.env.VITE_SERVER_URL}/${LSBreads}/${id}`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+		})
+			.then(response => {
+				if (!response.ok) {
+					throw new Error('Failed to delete bread')
+				}
+				return response.json()
+			})
+			.then(data => {
+				if (breads!.length === 1) {
+					newBreads = null
+				} else {
+					newBreads = breads!.filter(bread => bread.id !== data.id)
+				}
+				setBreads(newBreads)
+				toast.success(`Pan "${name}" eliminado.`)
+			})
 	}
 
 	useEffect(() => {
@@ -74,7 +85,7 @@ export default function Bread({
 	}, [bread])
 
 	const { attributes, listeners, setNodeRef, transform, transition } =
-		useSortable({ id: bread.id })
+		useSortable({ id: bread.id! })
 
 	const style = {
 		transform: CSS.Transform.toString(transform),

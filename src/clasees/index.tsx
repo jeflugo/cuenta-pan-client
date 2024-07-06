@@ -48,7 +48,6 @@ class Prep {
 		})
 
 		if (isNaN(mass) || mass === 0) {
-			console.log(mass)
 			toast.error('Lista vacia')
 			return false
 		}
