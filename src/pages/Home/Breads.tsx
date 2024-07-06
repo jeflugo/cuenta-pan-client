@@ -216,7 +216,6 @@ export default function Breads({ tag }: BreadListProps) {
 		})
 			.then(response => response.json())
 			.then(data => {
-				console.log(data)
 				setBreads(data)
 				setBreadPrep(null)
 				localStorage.removeItem(LSPrep)
