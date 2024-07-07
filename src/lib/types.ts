@@ -5,15 +5,19 @@ export type StateContextProviderProps = {
 export type StateContextType = {
 	saltyBreads: TBread[] | null
 	setSaltyBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
-	savedSweetBreads:TSavedBreads|null
-	setSavedSweetBreads:React.Dispatch<React.SetStateAction<TSavedBreads | null>>
+	savedSweetBreadsArr: TSavedBreadsArr | null
+	setSavedSweetBreadsArr: React.Dispatch<
+		React.SetStateAction<TSavedBreadsArr | null>
+	>
 	saltyBreadPrep: TPrep | null
 	setSaltyBreadPrep: React.Dispatch<React.SetStateAction<TPrep | null>>
 
 	sweetBreads: TBread[] | null
 	setSweetBreads: React.Dispatch<React.SetStateAction<TBread[] | null>>
-	savedSaltyBreads:TSavedBreads|null
-	setSavedSaltyBreads:React.Dispatch<React.SetStateAction<TSavedBreads | null>>
+	savedSaltyBreadsArr: TSavedBreadsArr | null
+	setSavedSaltyBreadsArr: React.Dispatch<
+		React.SetStateAction<TSavedBreadsArr | null>
+	>
 	sweetBreadPrep: TPrep | null
 	setSweetBreadPrep: React.Dispatch<React.SetStateAction<TPrep | null>>
 }
@@ -89,6 +93,13 @@ export type TBreadData = {
 	weight: number
 }
 
+// export type TSavedBreads = {
+// 	[date: string]: TBread[]
+// }
+
 export type TSavedBreads = {
-	[date: string]: TBread[]
+	date: string
+	breads: TBread[]
 }
+
+export type TSavedBreadsArr = TSavedBreads[]

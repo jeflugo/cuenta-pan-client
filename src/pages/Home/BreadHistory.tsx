@@ -1,14 +1,14 @@
 import { CgClose } from 'react-icons/cg'
-import { TSavedBreads } from '../../lib/types'
+import { TSavedBreadsArr } from '../../lib/types'
 
 type BreadHistoryProps = {
-	savedBreads: TSavedBreads | null
+	savedBreadsArr: TSavedBreadsArr | null
 	toggleHistory: () => void
 	name: string
 }
 
 const BreadHistory = ({
-	savedBreads,
+	savedBreadsArr,
 	toggleHistory,
 	name,
 }: BreadHistoryProps) => {
@@ -33,12 +33,12 @@ const BreadHistory = ({
 				<CgClose size={24} onClick={toggleHistory} />
 			</div>
 
-			{savedBreads &&
-				Object.keys(savedBreads).map(date => (
+			{savedBreadsArr &&
+				savedBreadsArr.map(({ date, breads }) => (
 					<div key={date} className='mb-2'>
 						<h3 className='text-xl underline'>{`${date} (${getWeekday(date)})`}</h3>
 						<ul>
-							{savedBreads[date].map(({ name, left, make }, index) => (
+							{breads.map(({ name, left, make }, index) => (
 								<li key={index}>
 									{name}: {left}/<span className='font-bold'>{make}</span>
 								</li>

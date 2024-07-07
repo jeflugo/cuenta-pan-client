@@ -1,6 +1,12 @@
 import { Button } from '@material-tailwind/react'
 import { useStateContext } from '../../context/state-context'
-import { StateContextType, TBread, TPrep } from '../../lib/types'
+import {
+	StateContextType,
+	TBread,
+	TPrep,
+	TSavedBreads,
+	// TSavedBreadsArr,
+} from '../../lib/types'
 import AddBread from './AddBread'
 import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
 import {
@@ -28,15 +34,15 @@ export default function Breads({ tag }: BreadListProps) {
 	const {
 		saltyBreads,
 		setSaltyBreads,
-		savedSaltyBreads,
-		setSavedSaltyBreads,
+		savedSaltyBreadsArr,
+		setSavedSaltyBreadsArr,
 		saltyBreadPrep,
 		setSaltyBreadPrep,
 
 		sweetBreads,
 		setSweetBreads,
-		savedSweetBreads,
-		setSavedSweetBreads,
+		savedSweetBreadsArr,
+		setSavedSweetBreadsArr,
 		sweetBreadPrep,
 		setSweetBreadPrep,
 	} = useStateContext() as StateContextType
@@ -44,8 +50,10 @@ export default function Breads({ tag }: BreadListProps) {
 	const isSweet = tag === 'sweet'
 	const breads = isSweet ? sweetBreads : saltyBreads
 	const setBreads = isSweet ? setSweetBreads : setSaltyBreads
-	const savedBreads = isSweet ? savedSweetBreads : savedSaltyBreads
-	const setSavedBreads = isSweet ? setSavedSweetBreads : setSavedSaltyBreads
+	const savedBreadsArr = isSweet ? savedSweetBreadsArr : savedSaltyBreadsArr
+	const setSavedBreadsArr = isSweet
+		? setSavedSweetBreadsArr
+		: setSavedSaltyBreadsArr
 	const prep = isSweet ? sweetBreadPrep : saltyBreadPrep
 	const setBreadPrep = isSweet ? setSweetBreadPrep : setSaltyBreadPrep
 
@@ -57,6 +65,8 @@ export default function Breads({ tag }: BreadListProps) {
 	const LSBreads = isSweet ? 'sweetBreads' : 'saltyBreads'
 	const LSSavedBreads = isSweet ? 'savedSweetBreads' : 'savedSaltyBreads'
 	const LSPrep = isSweet ? 'sweetBreadPrep' : 'saltyBreadPrep'
+
+	const LSLastReset = isSweet ? 'sweetBreadLR' : 'saltyBreadLR'
 
 	const [flour, setFlour] = useState<number>(0)
 	const [baseYeast, setBaseYeast] = useState<number>(BREAD_REC.yeast.amount)
@@ -75,14 +85,12 @@ export default function Breads({ tag }: BreadListProps) {
 
 	const [yesterdayBreads, setYesterdayBreads] = useState<TBread[] | null>(null)
 	useEffect(() => {
-		if (savedBreads) {
-			const yesterdayDate =
-				Object.keys(savedBreads)[Object.keys(savedBreads).length - 1]
-			const yBreads = savedBreads[yesterdayDate]
+		if (savedBreadsArr) {
+			const yBreads = savedBreadsArr[savedBreadsArr.length - 1].breads
 
 			setYesterdayBreads(yBreads)
 		}
-	}, [savedBreads])
+	}, [savedBreadsArr])
 
 	useEffect(() => {
 		if (prep) setFlour(prep.flour.amount)
@@ -136,7 +144,7 @@ export default function Breads({ tag }: BreadListProps) {
 		}
 	}
 
-	const emptylist = () =>
+	const emptyList = () =>
 		breads!.every(bread => bread.left === 0 && bread.make === 0)
 
 	const saveBreadListWithDate = useCallback(() => {
@@ -147,13 +155,18 @@ export default function Breads({ tag }: BreadListProps) {
 			.reverse()
 			.join('-') // Get yesterday's date in YYYY-MM-DD format in Venezuelan time
 
-		const newSavedBreads = JSON.parse(
-			localStorage.getItem(LSSavedBreads) || '{}'
+		const newSavedBreadsArr = JSON.parse(
+			localStorage.getItem(LSSavedBreads) || '[]'
 		)
-		newSavedBreads[yesterday] = breads
-		localStorage.setItem(LSSavedBreads, JSON.stringify(newSavedBreads))
-		setSavedBreads(newSavedBreads)
-	}, [breads, LSSavedBreads, setSavedBreads])
+		const newSavedBreads: TSavedBreads = {
+			date: yesterday,
+			breads: breads!,
+		}
+		newSavedBreadsArr.push(newSavedBreads)
+
+		localStorage.setItem(LSSavedBreads, JSON.stringify(newSavedBreadsArr))
+		setSavedBreadsArr(newSavedBreadsArr)
+	}, [breads, LSSavedBreads, setSavedBreadsArr])
 
 	const resetList = useCallback(() => {
 		const newBreads: TBread[] = breads!.map(bread => {
@@ -171,23 +184,23 @@ export default function Breads({ tag }: BreadListProps) {
 		const today = new Date()
 			.toLocaleString('en-US', { timeZone: 'America/Caracas' })
 			.split(',')[0]
-		const lastReset = localStorage.getItem('lastReset')
+		const lastReset = localStorage.getItem(LSLastReset)
 
 		if (lastReset !== today) {
 			if (breads) {
 				saveBreadListWithDate()
 				resetList()
-				localStorage.setItem('lastReset', today)
+				localStorage.setItem(LSLastReset, today)
 			}
 		}
-	}, [breads, saveBreadListWithDate, resetList])
+	}, [breads, saveBreadListWithDate, resetList, LSLastReset])
 
 	return (
 		<div className='mb-6'>
 			{/* *POP UPS */}
 			{openHistory && (
 				<BreadHistory
-					savedBreads={savedBreads}
+					savedBreadsArr={savedBreadsArr}
 					toggleHistory={toggleHistory}
 					name={name}
 				/>
@@ -209,10 +222,12 @@ export default function Breads({ tag }: BreadListProps) {
 
 			<div className='flex gap-3 mb-3 justify-between items-center'>
 				<div className='flex gap-3 items-center'>
-					<h2 className='text-3xl font-semibold'>Pan {name}</h2>
-					{savedBreads && <FaHistory onClick={toggleHistory} />}
+					<h2 className='text-3xl font-semibold first-letter:uppercase'>
+						{name}
+					</h2>
+					{savedBreadsArr && <FaHistory onClick={toggleHistory} />}
 				</div>
-				{breads && !emptylist() && (
+				{breads && !emptyList() && (
 					<div className='flex gap-1'>
 						<Button size='sm' onClick={toggleConfirmReset} variant='outlined'>
 							Reiniciar

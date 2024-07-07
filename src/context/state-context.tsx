@@ -4,7 +4,7 @@ import {
 	StateContextType,
 	TBread,
 	TPrep,
-	TSavedBreads,
+	TSavedBreadsArr,
 } from '../lib/types'
 
 // const initialSaltyBreads: TBread[] = [
@@ -43,10 +43,10 @@ const initialSweetBreadPrep: TPrep = JSON.parse(
 	localStorage.getItem('sweetBreadPrep') || 'null'
 )
 
-const initialSavedSweetBreads: TSavedBreads | null = JSON.parse(
+const initialSavedSweetBreadsArr: TSavedBreadsArr | null = JSON.parse(
 	localStorage.getItem('savedSweetBreads') || 'null'
 )
-const initialSavedSaltyBreads: TSavedBreads | null = JSON.parse(
+const initialSavedSaltyBreadsArr: TSavedBreadsArr | null = JSON.parse(
 	localStorage.getItem('savedSaltyBreads') || 'null'
 )
 
@@ -56,24 +56,22 @@ export default function StateContextProvider({
 	children,
 }: StateContextProviderProps) {
 	const [saltyBreads, setSaltyBreads] = useState<TBread[] | null>(null)
-	const [savedSaltyBreads, setSavedSaltyBreads] = useState<TSavedBreads | null>(
-		null
-	)
+	const [savedSaltyBreadsArr, setSavedSaltyBreadsArr] =
+		useState<TSavedBreadsArr | null>(null)
 	const [saltyBreadPrep, setSaltyBreadPrep] = useState<TPrep | null>(null)
 
 	const [sweetBreads, setSweetBreads] = useState<TBread[] | null>(null)
-	const [savedSweetBreads, setSavedSweetBreads] = useState<TSavedBreads | null>(
-		null
-	)
+	const [savedSweetBreadsArr, setSavedSweetBreadsArr] =
+		useState<TSavedBreadsArr | null>(null)
 	const [sweetBreadPrep, setSweetBreadPrep] = useState<TPrep | null>(null)
 
 	useEffect(() => {
 		setSaltyBreads(initialSaltyBreads)
-		setSavedSaltyBreads(initialSavedSaltyBreads)
+		setSavedSaltyBreadsArr(initialSavedSaltyBreadsArr)
 		setSaltyBreadPrep(initialSaltyBreadPrep)
 
 		setSweetBreads(initialSweetBreads)
-		setSavedSweetBreads(initialSavedSweetBreads)
+		setSavedSweetBreadsArr(initialSavedSweetBreadsArr)
 		setSweetBreadPrep(initialSweetBreadPrep)
 	}, [])
 
@@ -82,15 +80,15 @@ export default function StateContextProvider({
 			value={{
 				saltyBreads,
 				setSaltyBreads,
-				savedSweetBreads,
-				setSavedSweetBreads,
+				savedSweetBreadsArr,
+				setSavedSweetBreadsArr,
 				saltyBreadPrep,
 				setSaltyBreadPrep,
 
 				sweetBreads,
 				setSweetBreads,
-				savedSaltyBreads,
-				setSavedSaltyBreads,
+				savedSaltyBreadsArr,
+				setSavedSaltyBreadsArr,
 				sweetBreadPrep,
 				setSweetBreadPrep,
 			}}
