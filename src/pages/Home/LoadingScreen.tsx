@@ -1,0 +1,14 @@
+import { Spinner } from '@material-tailwind/react'
+
+export default function LoadingScreen() {
+	return (
+		<div className='bg-white h-screen flex justify-center items-center'>
+			<div className='flex gap-2'>
+				<span>
+					<Spinner />
+				</span>
+				<span>Cargado datos</span>
+			</div>
+		</div>
+	)
+}

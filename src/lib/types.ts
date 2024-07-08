@@ -20,6 +20,8 @@ export type StateContextType = {
 	>
 	sweetBreadPrep: TPrep | null
 	setSweetBreadPrep: React.Dispatch<React.SetStateAction<TPrep | null>>
+
+	somethingIsLoading: boolean
 }
 
 export type TBread = {

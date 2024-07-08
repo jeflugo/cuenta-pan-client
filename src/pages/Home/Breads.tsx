@@ -241,6 +241,7 @@ export default function Breads({ tag }: BreadListProps) {
 				await createReset()
 			}
 		}
+
 		if (!hasRunRef.current && breads) {
 			checkNewDay()
 			hasRunRef.current = true

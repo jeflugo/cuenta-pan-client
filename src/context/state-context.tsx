@@ -47,6 +47,7 @@ export default function StateContextProvider({
 	const [savedSweetBreadsArr, setSavedSweetBreadsArr] =
 		useState<TSavedBreadsArr | null>(null)
 	const [sweetBreadPrep, setSweetBreadPrep] = useState<TPrep | null>(null)
+	const [somethingIsLoading, setSomethingIsLoading] = useState(true)
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -59,6 +60,7 @@ export default function StateContextProvider({
 			setSavedSaltyBreadsArr(savedSaltyBreadsArrData)
 			setSweetBreads(sweetBreadsData)
 			setSavedSweetBreadsArr(savedSweetBreadsArrData)
+			setSomethingIsLoading(false)
 		}
 		fetchData()
 
@@ -82,6 +84,8 @@ export default function StateContextProvider({
 				setSavedSaltyBreadsArr,
 				sweetBreadPrep,
 				setSweetBreadPrep,
+
+				somethingIsLoading,
 			}}
 		>
 			{children}
