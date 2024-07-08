@@ -7,7 +7,7 @@ export default function LoadingScreen() {
 				<span>
 					<Spinner />
 				</span>
-				<span>Cargado datos</span>
+				<span>Cargando datos</span>
 			</div>
 		</div>
 	)
