@@ -8,14 +8,14 @@ import {
 	// TSavedBreadsArr,
 } from '../../lib/types'
 import AddBread from './AddBread'
-import { Suspense, lazy, useCallback, useEffect, useState } from 'react'
+import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
 import {
 	MASS_FLOUR_SALTY,
 	MASS_FLOUR_SWEET,
 	SALTY_REC,
 	SWEET_REC,
 } from '../../constants'
-import { Prep } from '../../clasees'
+import { Prep } from '../../classes'
 import toast from 'react-hot-toast'
 import Loading from '../../components/Loading'
 import CopyButton from '../../components/CopyButton'
@@ -62,11 +62,11 @@ export default function Breads({ tag }: BreadListProps) {
 	const BREAD_REC = isSweet ? SWEET_REC : SALTY_REC
 	const MASS_FLOUR = isSweet ? MASS_FLOUR_SWEET : MASS_FLOUR_SALTY
 
-	const LSBreads = isSweet ? 'sweetBreads' : 'saltyBreads'
-	const LSSavedBreadsArr = isSweet ? 'savedSweetBreads' : 'savedSaltyBreads'
-	const LSPrep = isSweet ? 'sweetBreadPrep' : 'saltyBreadPrep'
+	const DBBreads = isSweet ? 'sweetBreads' : 'saltyBreads'
+	const DbSavedBreadsArr = isSweet ? 'savedSweetBreads' : 'savedSaltyBreads'
+	const DBResets = isSweet ? 'sweetResets' : 'saltyResets'
 
-	const LSLastReset = isSweet ? 'sweetBreadLR' : 'saltyBreadLR'
+	const LSPrep = isSweet ? 'sweetBreadPrep' : 'saltyBreadPrep'
 
 	const [flour, setFlour] = useState<number>(0)
 	const [baseYeast, setBaseYeast] = useState<number>(BREAD_REC.yeast.amount)
@@ -162,7 +162,7 @@ export default function Breads({ tag }: BreadListProps) {
 			date: yesterday,
 			breads: breads!,
 		}
-		fetch(`${import.meta.env.VITE_SERVER_URL}/${LSSavedBreadsArr}`, {
+		fetch(`${import.meta.env.VITE_SERVER_URL}/${DbSavedBreadsArr}`, {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -179,10 +179,10 @@ export default function Breads({ tag }: BreadListProps) {
 			.catch(error => {
 				console.error('Error saving bread list:', error)
 			})
-	}, [breads, LSSavedBreadsArr, setSavedBreadsArr, savedBreadsArr])
+	}, [breads, DbSavedBreadsArr, setSavedBreadsArr, savedBreadsArr])
 
 	const resetList = useCallback(() => {
-		fetch(`${import.meta.env.VITE_SERVER_URL}/${LSBreads}`, {
+		fetch(`${import.meta.env.VITE_SERVER_URL}/${DBBreads}`, {
 			method: 'PUT',
 			headers: {
 				'Content-Type': 'application/json',
@@ -200,22 +200,52 @@ export default function Breads({ tag }: BreadListProps) {
 			})
 
 		toast.success('Lista reiniciada.')
-	}, [LSBreads, setBreadPrep, setBreads, LSPrep])
+	}, [DBBreads, setBreadPrep, setBreads, LSPrep])
 
+	const hasRunSweetRef = useRef(false)
+	const hasRunSaltyRef = useRef(false)
+	const hasRunRef = isSweet ? hasRunSweetRef : hasRunSaltyRef
 	useEffect(() => {
-		const today = new Date()
-			.toLocaleString('en-US', { timeZone: 'America/Caracas' })
-			.split(',')[0]
-		const lastReset = localStorage.getItem(LSLastReset)
+		const checkNewDay = async () => {
+			const URL = `${import.meta.env.VITE_SERVER_URL}/${DBResets}`
+			const today = new Date()
+				.toLocaleString('en-US', { timeZone: 'America/Caracas' })
+				.split(',')[0]
 
-		if (!lastReset) localStorage.setItem(LSLastReset, today)
+			const getResets = async () => {
+				const res = await fetch(URL)
+				const data = await res.json()
+				return data
+			}
 
-		if (lastReset !== today && breads && !emptyList()) {
-			saveBreadList()
-			resetList()
-			localStorage.setItem(LSLastReset, today)
+			const createReset = async () => {
+				const res = await fetch(URL, {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json',
+					},
+					body: JSON.stringify({ value: today }),
+				})
+				const data = await res.json()
+				return data
+			}
+
+			const resets = await getResets()
+
+			if (!resets) return await createReset()
+
+			const lastReset = resets[resets.length - 1].value
+			if (lastReset !== today && breads && !emptyList()) {
+				saveBreadList()
+				resetList()
+				await createReset()
+			}
 		}
-	}, [breads, saveBreadList, resetList, LSLastReset, emptyList])
+		if (!hasRunRef.current && breads) {
+			checkNewDay()
+			hasRunRef.current = true
+		}
+	}, [breads])
 
 	return (
 		<div className='mb-6'>
@@ -232,7 +262,7 @@ export default function Breads({ tag }: BreadListProps) {
 					breads={breads}
 					setBreads={setBreads}
 					toggleAdd={toggleAdd}
-					LSBreads={LSBreads}
+					LSBreads={DBBreads}
 				/>
 			)}
 			{openConfirmReset && (
@@ -264,7 +294,7 @@ export default function Breads({ tag }: BreadListProps) {
 					<BreadList
 						breads={breads}
 						setBreads={setBreads}
-						LSBreads={LSBreads}
+						LSBreads={DBBreads}
 						yesterdayBreads={yesterdayBreads}
 					/>
 				</Suspense>
