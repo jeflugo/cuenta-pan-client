@@ -30,6 +30,7 @@ export type TBread = {
 	weight: number
 	left: number
 	make: number
+	position: number
 }
 
 export type TPrep = {

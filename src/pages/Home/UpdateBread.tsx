@@ -48,9 +48,8 @@ export default function UpdateBread({
 			}),
 		})
 			.then(response => {
-				if (!response.ok) {
-					throw new Error('Failed to update bread')
-				}
+				if (!response.ok) throw new Error('Failed to update bread')
+
 				return response.json()
 			})
 			.then(data => {
@@ -67,16 +66,6 @@ export default function UpdateBread({
 				console.error('Error updating bread:', error)
 				toast.error('Error al actualizar el pan.')
 			})
-
-		const newBreads = breads!.map(bread => bread)
-		const index = breads!.findIndex(bread => bread.id === id)
-		newBreads[index].name = updateBreadData.name
-		newBreads[index].weight = updateBreadData.weight
-		setBreads(newBreads)
-		// localStorage.setItem(LSBreads, JSON.stringify(newBreads))
-
-		toast.success(`Pan "${updateBreadData.name}" actualizado.`)
-		toggleUpdate()
 	}
 
 	return (

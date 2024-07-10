@@ -51,14 +51,28 @@ export default function StateContextProvider({
 
 	useEffect(() => {
 		const fetchData = async () => {
-			const saltyBreadsData = await fetchInitialData('saltyBreads')
-			const savedSaltyBreadsArrData = await fetchInitialData('savedSaltyBreads')
-			const sweetBreadsData = await fetchInitialData('sweetBreads')
-			const savedSweetBreadsArrData = await fetchInitialData('savedSweetBreads')
+			const saltyBreadsData = (await fetchInitialData('saltyBreads')) as
+				| TBread[]
+				| null
+			const savedSaltyBreadsArrData = (await fetchInitialData(
+				'savedSaltyBreads'
+			)) as TSavedBreadsArr | null
+			const sweetBreadsData = (await fetchInitialData('sweetBreads')) as
+				| TBread[]
+				| null
+			const savedSweetBreadsArrData = (await fetchInitialData(
+				'savedSweetBreads'
+			)) as TSavedBreadsArr | null
 
-			setSaltyBreads(saltyBreadsData)
+			const sortedSaltyBreads =
+				saltyBreadsData &&
+				saltyBreadsData.sort((a, b) => a.position - b.position)
+			const sortedSweetBreads =
+				sweetBreadsData &&
+				sweetBreadsData.sort((a, b) => a.position - b.position)
+			setSaltyBreads(sortedSaltyBreads)
 			setSavedSaltyBreadsArr(savedSaltyBreadsArrData)
-			setSweetBreads(sweetBreadsData)
+			setSweetBreads(sortedSweetBreads)
 			setSavedSweetBreadsArr(savedSweetBreadsArrData)
 			setSomethingIsLoading(false)
 		}

@@ -44,9 +44,9 @@ export default function AddBread({
 			weight,
 			left: 0,
 			make: 0,
+			position: breads ? breads.length : 0,
 		}
 
-		// console.log(import.meta.env.VITE_SERVER_URL)
 		fetch(`${import.meta.env.VITE_SERVER_URL}/${LSBreads}`, {
 			method: 'POST',
 			headers: {
@@ -56,13 +56,8 @@ export default function AddBread({
 		})
 			.then(response => response.json())
 			.then(data => {
-				let newBreads: TBread[]
+				const newBreads = breads ? [...breads, data] : [data]
 
-				if (!breads) {
-					newBreads = [data]
-				} else {
-					newBreads = [...breads, data]
-				}
 				setBreads(newBreads)
 
 				toast.success(`Pan "${name}" agregado.`)

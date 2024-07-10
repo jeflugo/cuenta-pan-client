@@ -60,7 +60,21 @@ export default function BreadList({
 			const newIndex = breads.findIndex(item => item.id === over?.id)
 			const newBreads = arrayMove(breads, oldIndex, newIndex)
 			setBreads(newBreads)
-			localStorage.setItem(LSBreads, JSON.stringify(newBreads))
+
+			const newOrder = newBreads.map(({ id }, index) => ({
+				id,
+				position: index,
+			}))
+			const URL = `${import.meta.env.VITE_SERVER_URL}/${LSBreads}/reorder-list`
+			fetch(URL, {
+				method: 'PATCH',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(newOrder),
+			})
+				.then(res => res.json())
+				.then(() => {})
 		}
 	}
 
@@ -78,8 +92,8 @@ export default function BreadList({
 		}
 	}, [isDragging])
 
-	const findYBread = (id: string) => {
-		const yBread = yesterdayBreads?.find(bread => bread.id === id)
+	const findYBread = (name: string) => {
+		const yBread = yesterdayBreads?.find(bread => bread.name === name)
 		if (!yBread) return null
 		return yBread
 	}
@@ -100,7 +114,7 @@ export default function BreadList({
 								breads={breads}
 								setBreads={setBreads}
 								LSBreads={LSBreads}
-								yBread={findYBread(bread.id!)}
+								yBread={findYBread(bread.name)}
 							/>
 						</Suspense>
 					))}
