@@ -150,15 +150,20 @@ export default function Bread({
 					value={weight}
 					readOnly
 				/>
-				<input
-					className='border-2 border-black px-2 rounded outline-none py-[2px] w-10'
-					type='number'
-					name='left'
-					value={inputData.left}
-					onChange={handleChange}
-					onFocus={e => e.target.select()}
-					onBlur={handleBlur}
-				/>
+				<Tooltip
+					content={`Ayer: ${yBread?.left ? `${yBread.left}` : 'nada'}`}
+					placement='left'
+				>
+					<input
+						className='border-2 border-black px-2 rounded outline-none py-[2px] w-10'
+						type='number'
+						name='left'
+						value={inputData.left}
+						onChange={handleChange}
+						onFocus={e => e.target.select()}
+						onBlur={handleBlur}
+					/>
+				</Tooltip>
 				<Tooltip
 					content={`Ayer: ${yBread?.make ? `${yBread.make}` : 'nada'}`}
 					placement='left'
