@@ -26,24 +26,42 @@ const BreadHistory = ({
 		]
 		return weekdays[date.getDay()]
 	}
+
 	return (
 		<div className='fixed z-10 top-0 left-0 right-0 bottom-0 w-full py-4 px-5 bg-white overflow-y-scroll'>
 			<div className='flex items-center justify-between mb-3'>
 				<h2 className='text-2xl font-semibold'>Historial de pan {name}</h2>
 				<CgClose size={24} onClick={toggleHistory} />
 			</div>
-
 			{savedBreadsArr &&
-				savedBreadsArr.map(({ date, breads }) => (
-					<div key={date} className='mb-2'>
-						<h3 className='text-xl underline'>{`${date} (${getWeekday(date)})`}</h3>
-						<ul>
-							{breads.map(({ name, left, make }, index) => (
-								<li key={index}>
-									{name}: {left}/<span className='font-bold'>{make}</span>
-								</li>
-							))}
-						</ul>
+				[...savedBreadsArr].reverse().map(({ date, breads }) => (
+					<div
+						key={date}
+						className='text-center border rounded mb-2 border-black'
+					>
+						<h3 className='text-xl underline py-1 bg-blue-700 text-white'>{`${date} (${getWeekday(date)})`}</h3>
+
+						<table className='w-full'>
+							<thead>
+								<tr className='bg-blue-200 border-y border-black'>
+									<td className='text-lg'>Nombre</td>
+									<td className='border-x border-black'>Habian</td>
+									<td className='text-lg'>Se hizo</td>
+								</tr>
+							</thead>
+							<tbody>
+								{breads.map(({ name, left, make }, index) => (
+									<tr
+										key={index}
+										className='bg-gray-100 border-y border-gray-300'
+									>
+										<td>{name}</td>
+										<td className='border-x border-black'>{left}</td>
+										<td>{make}</td>
+									</tr>
+								))}
+							</tbody>
+						</table>
 					</div>
 				))}
 		</div>
