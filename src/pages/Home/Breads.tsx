@@ -1,12 +1,6 @@
 import { Button } from '@material-tailwind/react'
 import { useStateContext } from '../../context/state-context'
-import {
-	StateContextType,
-	TBread,
-	TPrep,
-	TSavedBreads,
-	// TSavedBreadsArr,
-} from '../../lib/types'
+import { StateContextType, TBread, TPrep, TSavedBreads } from '../../lib/types'
 import AddBread from './AddBread'
 import { Suspense, lazy, useCallback, useEffect, useRef, useState } from 'react'
 import {
@@ -26,11 +20,11 @@ import ConfirmReset from './ConfirmReset'
 const BreadList = lazy(() => import('./BreadList'))
 const PreparationDetails = lazy(() => import('./PreparationDetails'))
 
-type BreadListProps = {
+type BreadsProps = {
 	tag: string
 }
 
-export default function Breads({ tag }: BreadListProps) {
+export default function Breads({ tag }: BreadsProps) {
 	const {
 		saltyBreads,
 		setSaltyBreads,
