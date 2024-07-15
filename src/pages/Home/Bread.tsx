@@ -66,7 +66,7 @@ export default function Bread({
 		if (!inputHasChange) return
 
 		const value = parseInt(e.target.value)
-		if (value === 0 || isNaN(value)) return
+		if (isNaN(value)) return
 
 		const changedValue = {
 			[e.target.name]: value,
